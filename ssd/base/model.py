@@ -1,40 +1,40 @@
-from .object import Object
 from .architecture import *
-from .checkargment import _type_error_message
-from .dataset import DataSet
+from ..utils.argchecker import check_type
+from ..data.dataset import DataSet
 
 import tensorflow as tf
 
-class Model(Object):
+class Model(Architecture):
 
-    def __init__(self, params):
-        self.architecture = Architecture(params)
+    def __init__(self, input_model, layer_models, output_model):
+        super().__init__(input_model, layer_models, output_model)
+        self.__layers = []
 
         #self.create_model()
-        self.layers =[]
 
-    def create_model(self):
-        input = self.architecture.params[0]
-        if not isinstance(input, Input):
-            raise ValueError()
+    @property
+    def layers(self):
+        return self.__layers
 
-        self.layers.append(self.input(input))
-        for layer in self.architecture.params[1:]:
+    def build(self):
+
+        self.layers.append(self.input(self.layer_models[0]))
+        for layer_model in self.layer_models[1:]:
             input = self.layers[-1]
-            if isinstance(layer, Convolution):
-                self.layers.append(self.convolution(input, layer))
+            if isinstance(layer_model, Convolution):
+                self.layers.append(self.convolution(input, layer_model))
 
-            elif isinstance(layer, MaxPooling):
-                self.layers.append(self.maxPooling(input, layer))
+            elif isinstance(layer_model, MaxPooling):
+                self.layers.append(self.maxPooling(input, layer_model))
 
-            elif isinstance(layer, Flatten):
-                self.layers.append(self.flatten(input, layer))
+            elif isinstance(layer_model, Flatten):
+                self.layers.append(self.flatten(input, layer_model))
 
-            elif isinstance(layer, FullyConnection):
-                self.layers.append(self.fully_connection(input, layer))
+            elif isinstance(layer_model, FullyConnection):
+                self.layers.append(self.fully_connection(input, layer_model))
 
-            elif isinstance(layer, DropOut):
-                self.layers.append(self.dropout(input, layer))
+            elif isinstance(layer_model, DropOut):
+                self.layers.append(self.dropout(input, layer_model))
 
             else:
                 raise ValueError()
@@ -78,12 +78,11 @@ class Model(Object):
     below functions may be moved to utils
     """
     def input(self, input):
-        _type_error_message(Model, input, Input, 'input')
+        check_type(input, 'input', Input, Model, funcnames='input')
         return tf.compat.v1.placeholder(tf.float32, shape=[None, input.height, input.width, 3])
 
     def convolution(self, input, convolution):
-
-        _type_error_message(Model, convolution, Convolution, 'convolution')
+        check_type(convolution, 'convolution', Convolution, Model, funcnames='convolution')
         input_channels = int(input.get_shape()[-1])
         with tf.compat.v1.variable_scope(convolution.name):
             # get variable name's value in scope, if which doesn't exist create it
@@ -99,19 +98,18 @@ class Model(Object):
             return tf.nn.relu(output)
 
     def maxPooling(self, input, maxpooling):
-
-        _type_error_message(Model, maxpooling, MaxPooling, 'maxpooling')
+        check_type(maxpooling, 'maxpooling', MaxPooling, Model, funcnames='maxpooling')
         return tf.nn.max_pool2d(input, ksize=[1, maxpooling.kernel_height, maxpooling.kernel_width, 1],
                               strides=[1, maxpooling.stride_height, maxpooling.stride_width, 1], padding=maxpooling.padding)
     #def batch_normalization(self):
 
     def flatten(self, input, flatten):
-        _type_error_message(Model, flatten, Flatten, 'flatten')
+        check_type(flatten, 'flatten', Flatten, Model, funcnames='flatten')
         shape = np.array(input.get_shape().as_list()[1:])
         return tf.reshape(input, [-1, shape.prod()])
 
     def fully_connection(self, input, fullyconnection):
-        _type_error_message(Model, fullyconnection, FullyConnection, 'fullyconnection')
+        check_type(fullyconnection, 'fullyconnection', FullyConnection, Model, funcnames='fullyconnection')
 
         inputnums = int(input.get_shape()[-1])
         with tf.compat.v1.variable_scope(fullyconnection.name):
@@ -133,5 +131,5 @@ class Model(Object):
                 return
 
     def dropout(self, input, dropout):
-        _type_error_message(Model, dropout, DropOut, 'dropout')
+        check_type(dropout, 'dropout', DropOut, Model, funcnames='dropout')
         return tf.nn.dropout(input, rate=dropout.rate)

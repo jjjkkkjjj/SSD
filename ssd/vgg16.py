@@ -3,7 +3,7 @@ from .base.architecture import *
 
 
 class VGG16(Model):
-    params = [
+    _layer_models = [
         Input('input', shape=[32, 32]),
         Convolution('conv1_1', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
         Convolution('conv1_2', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
@@ -35,7 +35,8 @@ class VGG16(Model):
         FullyConnection('fc7', outputnums=4096, activationfunc='relu'),
     ]
     def __init__(self, outputnum):
-        super().__init__(params=self.params)
-        self.params.append(FullyConnection('fc8', outputnums=outputnum, activationfunc='relu'))
+        super().__init__(input_model=Input('input', shape=[32, 32]),
+                         layer_models=self._layer_models,
+                         output_model=FullyConnection('fc8', outputnums=outputnum, activationfunc='relu'))
 
-        self.create_model()
+        self.build()
