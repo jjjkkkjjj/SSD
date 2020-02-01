@@ -1,4 +1,4 @@
-from .errormsg import _emsg_type_check, _emsg_name_check, _emsg_check_layers_all, _emsg_check_layers_input
+from ...utils.error.errormsg import _emsg_type_check, _emsg_name_check, _emsg_check_layers_all
 
 import numpy as np
 
@@ -46,6 +46,16 @@ def check_name(arg, argname, valid_names, layercls):
         raise layercls.NameError(message)
 
     return arg
+"""
+see above
+param:
+    default : if arg is None, return default
+"""
+def check_name_including_none(arg, argname, valid_names, layercls, default):
+    if arg is None:
+        return default
+    else:
+        return check_name(arg, argname, valid_names, layercls)
 
 """
 param:
@@ -58,14 +68,16 @@ raise:
     ArgumentError   : if all layers' elements isn't inherited Layer, raise ArgumentError
 """
 def check_layer_models(layer_models):
-    from ..base.architecture import Architecture, Layer
+    from ...base.architecture import Architecture, Layer
     check_type(layer_models, 'layers', (list, np.ndarray), Architecture)
     if not all(isinstance(layer_model, Layer) for layer_model in layer_models):
         message = _emsg_check_layers_all()
         raise Architecture.ArgumentError(message)
 
+    """
     if not (len(layer_models) > 0 and layer_models[0].type == Layer.LayerType.input):
         message = _emsg_check_layers_input(layer_models[0])
         raise Architecture.ArgumentError(message)
+    """
 
     return layer_models

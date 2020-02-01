@@ -1,8 +1,12 @@
-from ..utils.argchecker import *
+from ..utils.error.argchecker import *
 from .object import Object
 
 from enum import Enum
 import numpy as np
+
+#import warnings
+#warnings.filterwarnings('ignore',category=FutureWarning)
+
 
 class Layer(Object):
     def __init__(self, name, layertype):
@@ -98,15 +102,18 @@ params: array-like of Layer
 class Architecture(Object):
     def __init__(self, input_model, layer_models, output_model):
         self.__input_model = check_type(input_model, 'input_model', Input, Architecture)
-        self.__layer_models = check_layer_models(layer_models)
+        self.__hidden_models = check_layer_models(layer_models)
         self.__output_model = check_type(output_model, 'output_model', (FullyConnection), Architecture)
 
-
+    @property
     def input_model(self):
         return self.__input_model
+    @property
+    def output_model(self):
+        return self.__output_model
 
     @property
-    def layer_models(self):
-        return self.__layer_models
+    def hidden_models(self):
+        return self.__hidden_models
 
 

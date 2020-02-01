@@ -1,4 +1,4 @@
-from ssd.base.object import Object
+from ..base.object import Object
 
 class DataSet(Object):
     def __init__(self, X, labels, test_X, test_labels):

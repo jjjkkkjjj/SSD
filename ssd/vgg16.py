@@ -3,8 +3,8 @@ from .base.architecture import *
 
 
 class VGG16(Model):
-    _layer_models = [
-        Input('input', shape=[32, 32]),
+    _hidden_models = [
+        #Input('input', shape=[32, 32]),
         Convolution('conv1_1', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
         Convolution('conv1_2', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
         MaxPooling('pool1', kernel=[2, 2], strides=[1, 1]),
@@ -30,13 +30,14 @@ class VGG16(Model):
 
         Flatten('flatten'),
         FullyConnection('fc6', outputnums=4096, activationfunc='relu'),
-        # DropOut('do6', rate=0.5)
+        DropOut('do6', rate=0.5),
 
         FullyConnection('fc7', outputnums=4096, activationfunc='relu'),
+        DropOut('do7', 0.5)
     ]
     def __init__(self, outputnum):
         super().__init__(input_model=Input('input', shape=[32, 32]),
-                         layer_models=self._layer_models,
+                         hidden_models=self._hidden_models,
                          output_model=FullyConnection('fc8', outputnums=outputnum, activationfunc='relu'))
 
         self.build()
