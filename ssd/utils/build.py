@@ -7,7 +7,8 @@ def input(input):
     from ..base.model import Model
 
     check_type(input, 'input', Input, Model, funcnames='input')
-    return tf.compat.v1.placeholder(tf.float32, shape=[None, input.height, input.width, 3])
+    with tf.compat.v1.variable_scope(input.name):
+        return tf.compat.v1.placeholder(tf.float32, shape=[None, input.height, input.width, 3])
 
 
 def convolution(input, convolution):

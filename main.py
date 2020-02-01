@@ -3,7 +3,7 @@ from dataset.cifar10 import data
 from ssd.params.training import *
 
 if __name__ == '__main__':
-    vgg = VGG16(10)
+    vgg = VGG16(10, verbose=True)
     train_img, train_labels, test_img, test_labels = data()
 
     # training

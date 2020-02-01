@@ -35,9 +35,9 @@ class VGG16(Model):
         FullyConnection('fc7', outputnums=4096, activationfunc='relu'),
         DropOut('do7', 0.5)
     ]
-    def __init__(self, outputnum):
+    def __init__(self, outputnum, *args, **kwargs):
         super().__init__(input_model=Input('input', shape=[32, 32]),
                          hidden_models=self._hidden_models,
-                         output_model=FullyConnection('fc8', outputnums=outputnum, activationfunc='relu'))
+                         output_model=FullyConnection('fc8', outputnums=outputnum, activationfunc='relu'), *args, **kwargs)
 
         self.build()
