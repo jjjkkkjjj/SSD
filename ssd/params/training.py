@@ -6,8 +6,8 @@ class LossFunction(Object):
 
     reg_type_list = ['none', 'l1', 'l2']
     #loss function and regularization
-    def __init__(self, func='', reg_type=None, decay=10e-3):
-        self.func = check_name(func, 'func', self.func_list, LossFunction)
+    def __init__(self, func='square_error', reg_type=None, decay=10e-3):
+        self.func = check_name(func, 'func', self.func_list, self)
         self.reg_type = check_name_including_none(reg_type, 'reg_type', self.reg_type_list, LossFunction, default='none')
         self.decay = check_type(decay, 'decay', float, LossFunction)
 
@@ -28,10 +28,10 @@ class TrainingParams(Object):
     iteration: Iteration
     optimization: Optimization
 
-    def __init__(self, lossfunction=LossFunction(), iteration=Iteration(), optimization=Optimization()):
-        self.loss = check_type(lossfunction, 'lossfunction', LossFunction, TrainingParams)
-        self.iteration = check_type(iteration, 'iteration', Iteration, TrainingParams)
-        self.optimization = check_type(optimization, 'optimization', Optimization, TrainingParams)
+    def __init__(self, lossfunction=None, iteration=None, optimization=None):
+        self.loss = check_type_including_none(lossfunction, 'lossfunction', LossFunction, TrainingParams, default=LossFunction())
+        self.iteration = check_type_including_none(iteration, 'iteration', Iteration, TrainingParams, default=Iteration())
+        self.optimization = check_type_including_none(optimization, 'optimization', Optimization, TrainingParams, default=Optimization())
 
     # getter and setter will be implemented in future
     """

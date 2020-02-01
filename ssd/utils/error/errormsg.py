@@ -19,7 +19,7 @@ def _emsg_type_check(arg, argname, classes):
     return '{0} must be {1}, but got {2}'.format(argname, clsstr, _get_typename(arg))
 
 def _emsg_name_check(arg, argname, valid_names):
-    return '{0} must be {1}, but got {2}'.format(argname, valid_names, arg)
+    return '{0} must be {1}, but got \'{2}\''.format(argname, valid_names, arg)
 
 def _emsg_check_layers_all():
     return 'all layers\' elements must inherit Layer'

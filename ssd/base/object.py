@@ -1,7 +1,7 @@
 
 class Object:
-    class ArgumentError(Exception):
+    class ArgumentTypeError(Exception):
         pass
-    class NameError(Exception):
+    class ArgumentNameError(Exception):
         pass
 

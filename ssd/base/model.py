@@ -48,20 +48,20 @@ class Model(Architecture, OptimezerMixin):
         return self.layers[-1]
 
     def __get_layer(self, input, layer_model):
-        if isinstance(layer_model, Convolution):
+        if layer_model.type == Layer.LayerType.convolution:
             return build.convolution(input, layer_model)
 
-        elif isinstance(layer_model, MaxPooling):
+        elif layer_model.type == Layer.LayerType.maxpooling:
             return build.maxPooling(input, layer_model)
 
-        elif isinstance(layer_model, Flatten):
+        elif layer_model.type == Layer.LayerType.flatten:
             return build.flatten(input, layer_model)
 
-        elif isinstance(layer_model, FullyConnection):
+        elif layer_model.type == Layer.LayerType.fullyconnection:
             return build.fully_connection(input, layer_model)
 
-        elif isinstance(layer_model, DropOut):
+        elif layer_model.type == Layer.LayerType.dropout:
             return build.dropout(input, layer_model)
 
         else:
-            raise ValueError()
+            raise SyntaxError('This was bug...')

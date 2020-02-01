@@ -21,9 +21,18 @@ def check_type(arg, argname, classes, layercls, funcnames=''):
         message = _emsg_type_check(arg, argname, classes)
         if funcnames != '':
             message = 'In {0}, '.format(funcnames) + message
-        raise layercls.ArgumentError(message)
+        raise layercls.ArgumentTypeError(message)
     return arg
-
+"""
+see above
+param:
+    default : if arg is None, return default
+"""
+def check_type_including_none(arg, argname, classes, layercls, default, funcnames=''):
+    if arg is None:
+        return default
+    else:
+        return check_type(arg, argname, classes, layercls, funcnames)
 
 """
 param:
@@ -36,14 +45,14 @@ return:
     arg         : if valid_names contains arg, return arg
 
 raise:
-    NameError   : if valid_names doesn't contains arg, raise NameError
+    ArgumentNameError   : if valid_names doesn't contains arg, raise ArgumentNameError
 """
 def check_name(arg, argname, valid_names, layercls):
-    check_type(arg, argname, str, layercls.ArgumentError)
+    check_type(arg, argname, str, layercls.ArgumentTypeError)
 
     if not arg in valid_names:
         message = _emsg_name_check(arg, argname, valid_names)
-        raise layercls.NameError(message)
+        raise layercls.ArgumentNameError(message)
 
     return arg
 """
@@ -65,19 +74,19 @@ return:
     layers          : if all layers' elements is inherited Layer, return layers
 
 raise:
-    ArgumentError   : if all layers' elements isn't inherited Layer, raise ArgumentError
+    ArgumentTypeError   : if all layers' elements isn't inherited Layer, raise ArgumentTypeError
 """
 def check_layer_models(layer_models):
     from ...base.architecture import Architecture, Layer
     check_type(layer_models, 'layers', (list, np.ndarray), Architecture)
     if not all(isinstance(layer_model, Layer) for layer_model in layer_models):
         message = _emsg_check_layers_all()
-        raise Architecture.ArgumentError(message)
+        raise Architecture.ArgumentTypeError(message)
 
     """
     if not (len(layer_models) > 0 and layer_models[0].type == Layer.LayerType.input):
         message = _emsg_check_layers_input(layer_models[0])
-        raise Architecture.ArgumentError(message)
+        raise Architecture.ArgumentTypeError(message)
     """
 
     return layer_models
