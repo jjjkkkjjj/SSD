@@ -6,10 +6,10 @@ import tensorflow as tf
 
 class Model(Architecture):
 
-    def __init__(self, input_model, layer_models, output_model):
+    def __init__(self, input_model, layer_models, output_model, verbose=True):
         super().__init__(input_model, layer_models, output_model)
         self.__layers = []
-
+        self.verbose = verbose
         #self.create_model()
 
     @property
@@ -38,6 +38,10 @@ class Model(Architecture):
 
             else:
                 raise ValueError()
+
+        if self.verbose:
+            print("\nBuilding model was succeeded.\n")
+
 
     @property
     def score(self):
