@@ -1,7 +1,7 @@
-from ssd.utils.argutils import _get_typename_from_class, _get_typename
+from ...utils.argutils import _get_typename_from_class, _get_typename
 
 # return instances' names for error message
-def _emsg_type_check(arg, argname, classes):
+def _emsg_type_check(arg, argname, classes, cls, funcnames):
 
     if not isinstance(classes, (list, tuple)):
         clsstr = _get_typename_from_class(classes)
@@ -16,17 +16,28 @@ def _emsg_type_check(arg, argname, classes):
             ret += '{0}, '.format(_get_typename_from_class(_class))
         clsstr = ret + 'or {0}'.format(_get_typename_from_class(classes[-1]))
 
-    return '{0} must be {1}, but got {2}'.format(argname, clsstr, _get_typename(arg))
+    message = '{0} must be {1}, but got {2}'.format(argname, clsstr, _get_typename(arg))
+    if funcnames != '':
+        message = 'In {0}, '.format(funcnames) + message
 
-def _emsg_name_check(arg, argname, valid_names):
-    return '{0} must be {1}, but got \'{2}\''.format(argname, valid_names, arg)
+    return '{0}: {1}'.format(_get_typename_from_class(cls), message)
 
-def _emsg_check_layers_all():
-    return 'all layers\' elements must inherit Layer'
+def _emsg_name_check(arg, argname, valid_names, cls, funcnames):
+    message = '{0} must be {1}, but got \'{2}\''.format(argname, valid_names, arg)
+    if funcnames != '':
+        message = 'In {0}, '.format(funcnames) + message
+    return '{0}: {1}'.format(_get_typename_from_class(cls), message)
+
+def _emsg_check_layers_all(cls):
+    return '{0}: all layers\' elements must inherit Layer'.format(_get_typename_from_class(cls))
 
 def _emsg_check_layers_input(firstlayer):
     return 'layers\' first element must be inherited Input, but got {0}'.format(firstlayer.type)
 
-def _emsg_enum_check(argname, enum):
+def _emsg_enum_check(argname, enum, cls, funcnames):
     names = [e.name for e in enum]
-    return 'Argument \'{0}\' was invalid, select one in {1}'.format(argname, names)
+
+    message = 'Argument \'{0}\' was invalid, select one in {1}'.format(argname, names)
+    if funcnames != '':
+        message = 'In {0}, '.format(funcnames) + message
+    return '{0}: {1}'.format(_get_typename_from_class(cls), message)

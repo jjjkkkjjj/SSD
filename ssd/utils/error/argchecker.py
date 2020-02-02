@@ -1,4 +1,5 @@
 from ...utils.error.errormsg import _emsg_type_check, _emsg_name_check, _emsg_check_layers_all, _emsg_enum_check
+from ...utils.error.exception import *
 
 import numpy as np
 
@@ -18,10 +19,8 @@ raise:
 """
 def check_type(arg, argname, classes, layercls, funcnames=''):
     if not isinstance(arg, classes):
-        message = _emsg_type_check(arg, argname, classes)
-        if funcnames != '':
-            message = 'In {0}, '.format(funcnames) + message
-        raise layercls.ArgumentTypeError(message)
+        message = _emsg_type_check(arg, argname, classes, layercls, funcnames)
+        raise ArgumentTypeError(message)
     return arg
 """
 see above
@@ -47,12 +46,12 @@ return:
 raise:
     ArgumentNameError   : if valid_names doesn't contains arg, raise ArgumentNameError
 """
-def check_name(arg, argname, valid_names, layercls):
-    check_type(arg, argname, str, layercls.ArgumentTypeError)
+def check_name(arg, argname, valid_names, layercls, funcnames=''):
+    check_type(arg, argname, str, layercls, funcnames)
 
     if not arg in valid_names:
-        message = _emsg_name_check(arg, argname, valid_names)
-        raise layercls.ArgumentNameError(message)
+        message = _emsg_name_check(arg, argname, valid_names, layercls, funcnames)
+        raise ArgumentNameError(message)
 
     return arg
 """
@@ -60,11 +59,11 @@ see above
 param:
     default : if arg is None, return default
 """
-def check_name_including_none(arg, argname, valid_names, layercls, default):
+def check_name_including_none(arg, argname, valid_names, layercls, default, funcnames=''):
     if arg is None:
         return default
     else:
-        return check_name(arg, argname, valid_names, layercls)
+        return check_name(arg, argname, valid_names, layercls, funcnames)
 
 """
 param:
@@ -80,8 +79,8 @@ def check_layer_models(layer_models):
     from ...base.architecture import Architecture, Layer
     check_type(layer_models, 'layers', (list, np.ndarray), Architecture)
     if not all(isinstance(layer_model, Layer) for layer_model in layer_models):
-        message = _emsg_check_layers_all()
-        raise Architecture.ArgumentTypeError(message)
+        message = _emsg_check_layers_all(Architecture)
+        raise ArgumentTypeError(message)
 
     """
     if not (len(layer_models) > 0 and layer_models[0].type == Layer.LayerType.input):
@@ -109,8 +108,6 @@ raise:
 
 def check_enum(arg, argname, enum, layercls, funcnames=''):
     if not isinstance(arg, enum):
-        message = _emsg_enum_check(argname, enum)
-        if funcnames != '':
-            message = 'In {0}, '.format(funcnames) + message
-        raise layercls.ArgumentEnumError(message)
+        message = _emsg_enum_check(argname, enum, layercls, funcnames)
+        raise ArgumentEnumError(message)
     return arg
