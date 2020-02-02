@@ -7,9 +7,9 @@ if __name__ == '__main__':
     train_img, train_labels, test_img, test_labels = data()
 
     # training
-    loss = LossFunction(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.l2, decay=5*10e-4)
-    iteration = Iteration(epoch=10, batch_size=32)
-    opt = Optimization(learning_rate=10e-2, momentum=0.9)
+    loss = LossFunctionParams(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.l2, decay=5 * 10e-4)
+    iteration = IterationParams(epoch=10, batch_size=32)
+    opt = OptimizationParams(learning_rate=10e-2, momentum=0.9)
     train_params = TrainingParams(loss, iteration, opt)
 
     vgg.train(train_img, train_labels, test_img, test_labels, params=train_params)

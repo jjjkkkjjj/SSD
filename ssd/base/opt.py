@@ -2,6 +2,7 @@ from ..data.dataset import DataSet
 from ..params.loss_function import get_loss_function
 from ..params.regularization import get_loss_added_regularization
 from ..params.training import TrainingParams
+from ..data.iterator import *
 from ..utils.error.argchecker import *
 
 import tensorflow as tf
@@ -12,16 +13,16 @@ class OptimezerMixin:
     weights: list
     params: TrainingParams
 
-    def train(self, X, labels, test_X, test_labels, params):
+    def train(self, train_X, train_labels, test_X, test_labels, params):
         # get params for training
         self.params = check_type(params, 'params', TrainingParams, OptimezerMixin, funcnames='train')
 
-        iter_params = self.params.iteration
-        loss_params = self.params.loss
-        opt_params = self.params.optimization
+        iter_params = self.params.iter_params
+        loss_params = self.params.lossfunc_params
+        opt_params = self.params.opt_params
 
         # set dataset
-        dataset = DataSet(X, labels, test_X, test_labels)
+        dataset = DataSet(train_X, train_labels, test_X, test_labels)
 
         y_true = tf.compat.v1.placeholder(tf.float32, shape=[None, 10])
 
@@ -34,10 +35,10 @@ class OptimezerMixin:
         """
 
         # set objective function
-        loss = get_loss_function(dataset.labels, self.score, loss_params, OptimezerMixin)
+        loss = get_loss_function(y_true, self.score, loss_params, OptimezerMixin)
         loss = get_loss_added_regularization(self.weights, loss, loss_params, OptimezerMixin)
         optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=opt_params.learning_rate)
-        train = optimizer.minimize(loss)
+        objective_function = optimizer.minimize(loss)
 
         init = tf.compat.v1.global_variables_initializer()
 
@@ -45,6 +46,16 @@ class OptimezerMixin:
         with tf.compat.v1.Session() as session:
             session.run(init)
 
+            for epoch in dataset.epoch_iterator(iter_params, random_by_epoch=True):
+                epoch: EpochIterator
+                logging.info('\nEpoch: {0}\n'.format(epoch.epoch_now))
+
+                for X, labels in epoch.batch_iterator():
+                    session.run(objective_function, feed_dict={'x': x, 'y_true': labels, 'keep_prob': 0.5})
+
+
+
+            """
             for i in range(iter_params.epoch):
                 logging.info('\nEpoch: {0}\n'.format(i))
 
@@ -57,4 +68,5 @@ class OptimezerMixin:
 
                 test_acc = acc.eval(feed_dict={'x': dataset.test_X, 'y_true': dataset.test_labels, 'keep_prob': 1.0})
                 logging.info('accuracy: {0}'.format(test_acc))
+            """
 

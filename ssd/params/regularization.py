@@ -1,12 +1,12 @@
 from ..utils.error.argchecker import *
 from ..utils.error.warnmsg import _wmsg_enum
-from ..params.training import LossFunction, LossFuncType, LossRegularizationType
+from ..params.training import LossFunctionParams, LossFuncType, LossRegularizationType
 
 import tensorflow as tf
 import logging
 
 def get_loss_added_regularization(weights, loss, loss_params, cls):
-    lossfunction = check_type(loss_params, 'loss_params', LossFunction, cls)
+    lossfunction = check_type(loss_params, 'loss_params', LossFunctionParams, cls)
 
     # add regularization term
     if lossfunction.reg_type == LossRegularizationType.none:
