@@ -28,7 +28,7 @@ class VGG16(Model):
         Convolution('conv5_3', kernel=[3, 3], kernelnums=512, strides=[1, 1]),
         MaxPooling('pool5', kernel=[2, 2], strides=[1, 1]),
 
-        Flatten('flatten'),
+        Flatten('flatten1'),
         FullyConnection('fc6', outputnums=4096, activationfunc='relu'),
         DropOut('do6', rate=0.5),
 

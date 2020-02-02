@@ -7,7 +7,7 @@ if __name__ == '__main__':
     train_img, train_labels, test_img, test_labels = data()
 
     # training
-    loss = LossFunction(func='multinominal_logistic_regression', reg_type='l2', decay=5*10e-4)
+    loss = LossFunction(func=LossFuncType, reg_type=LossRegularizationType.l2, decay=5*10e-4)
     iteration = Iteration(epoch=10, batch_size=32)
     opt = Optimization(learning_rate=10e-2, momentum=0.9)
     train_params = TrainingParams(loss, iteration, opt)

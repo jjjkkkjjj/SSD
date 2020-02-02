@@ -1,4 +1,4 @@
-from ...utils.error.errormsg import _emsg_type_check, _emsg_name_check, _emsg_check_layers_all
+from ...utils.error.errormsg import _emsg_type_check, _emsg_name_check, _emsg_check_layers_all, _emsg_enum_check
 
 import numpy as np
 
@@ -90,3 +90,27 @@ def check_layer_models(layer_models):
     """
 
     return layer_models
+
+
+"""
+param:
+    arg         : the argument you want to check
+    argname     : arg's name
+    classes     : list of static class arg must be inherited
+    layercls    : static class
+
+return:
+    arg         : if arg's instance contains 'instances', return value
+
+raise:
+    ArgmentEnumError: if arg's instance doesn't contain 'instances', raise ArgmentEnumError
+"""
+
+
+def check_enum(arg, argname, enum, layercls, funcnames=''):
+    if not isinstance(arg, enum):
+        message = _emsg_enum_check(argname, enum)
+        if funcnames != '':
+            message = 'In {0}, '.format(funcnames) + message
+        raise layercls.ArgumentEnumError(message)
+    return arg

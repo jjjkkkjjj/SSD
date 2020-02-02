@@ -26,3 +26,7 @@ def _emsg_check_layers_all():
 
 def _emsg_check_layers_input(firstlayer):
     return 'layers\' first element must be inherited Input, but got {0}'.format(firstlayer.type)
+
+def _emsg_enum_check(argname, enum):
+    names = [e.name for e in enum]
+    return 'Argument \'{0}\' was invalid, select one in {1}'.format(argname, names)

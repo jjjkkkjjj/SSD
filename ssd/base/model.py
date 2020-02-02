@@ -24,12 +24,18 @@ class Model(Architecture, OptimezerMixin):
         if self.verbose:
             logging.basicConfig(level=logging.DEBUG)
 
-        self.weights = []
-        self.biases = []
+        self.__weights = []
+        self.__biases = []
 
     @property
     def layers(self):
         return self.__layers
+    @property
+    def weights(self):
+        return self.__weights
+    @property
+    def biases(self):
+        return self.__biases
 
     def build(self):
 
@@ -47,8 +53,6 @@ class Model(Architecture, OptimezerMixin):
         layer = self.__get_layer(input, self.output_model)
         self.layers.append(layer)
 
-        self.weights, self.biases = self.__get_weights_biases()
-        exit()
         logging.debug("\nBuilding model was succeeded.\n")
 
 
@@ -63,7 +67,10 @@ class Model(Architecture, OptimezerMixin):
     """
     def __get_layer(self, input, layer_model):
         if layer_model.type == Layer.LayerType.convolution:
-            return build.convolution(input, layer_model)
+            layer, weights, bias = build.convolution(input, layer_model)
+            self.__weights.append(weights)
+            self.__biases.append(bias)
+            return layer
 
         elif layer_model.type == Layer.LayerType.maxpooling:
             return build.maxPooling(input, layer_model)
@@ -72,23 +79,13 @@ class Model(Architecture, OptimezerMixin):
             return build.flatten(input, layer_model)
 
         elif layer_model.type == Layer.LayerType.fullyconnection:
-            return build.fully_connection(input, layer_model)
+            layer, weights, bias = build.fully_connection(input, layer_model)
+            self.__weights.append(weights)
+            self.__biases.append(bias)
+            return layer
 
         elif layer_model.type == Layer.LayerType.dropout:
             return build.dropout(input, layer_model)
 
         else:
             raise SyntaxError('This was bug...')
-
-    """
-    :returns
-        weights : list of tf.Variable is weights
-        biases  : list of tf.Variable is bias
-    """
-    def __get_weights_biases(self):
-        weights = []
-        biases = []
-
-        for layer in self.layers:
-            print(layer.name)
-        return  weights, biases

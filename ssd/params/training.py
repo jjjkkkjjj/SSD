@@ -1,15 +1,35 @@
 from ..base.object import Object
 from ..utils.error.argchecker import *
 
+from enum import Enum
+
+
+class LossFuncType(Enum):
+    square_error = 0
+    multinominal_logistic_regression = 1
+
+
+class LossRegularizationType(Enum):
+    none = 0
+    l1 = 1
+    l2 = 2
+
 class LossFunction(Object):
+    # enum may be better than str?
     func_list = ['square_error', 'multinominal_logistic_regression']
 
     reg_type_list = ['none', 'l1', 'l2']
+
+    func_type: LossFuncType
+    reg_type: LossRegularizationType
+
     #loss function and regularization
-    def __init__(self, func='square_error', reg_type=None, decay=10e-3):
-        self.func = check_name(func, 'func', self.func_list, self)
-        self.reg_type = check_name_including_none(reg_type, 'reg_type', self.reg_type_list, LossFunction, default='none')
+    def __init__(self, func=LossFuncType.square_error, reg_type=LossRegularizationType.none, decay=10e-3):
+        self.func_type = check_enum(func, 'func', LossFuncType, LossFunction)
+        self.reg_type = check_enum(reg_type, 'reg_type', LossRegularizationType, LossFunction)
         self.decay = check_type(decay, 'decay', float, LossFunction)
+
+
 
 class Iteration(Object):
     # epoch and batch size

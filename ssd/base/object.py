@@ -4,4 +4,6 @@ class Object:
         pass
     class ArgumentNameError(Exception):
         pass
+    class ArgumentEnumError(Exception):
+        pass
 

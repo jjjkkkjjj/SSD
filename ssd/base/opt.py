@@ -1,6 +1,7 @@
 from ..data.dataset import DataSet
-from ssd.params.loss_function import *
-from ssd.params.training import TrainingParams
+from ..params.loss_function import get_loss_function
+from ..params.regularization import get_loss_added_regularization
+from ..params.training import TrainingParams
 from ..utils.error.argchecker import *
 
 import tensorflow as tf
@@ -8,6 +9,7 @@ import logging
 
 class OptimezerMixin:
     score: tf.Tensor
+    weights: list
     params: TrainingParams
 
     def train(self, X, labels, test_X, test_labels, params):
@@ -32,8 +34,9 @@ class OptimezerMixin:
         """
 
         # set objective function
-        loss = multinominal_logistic_reggression(dataset.labels, self.score)
-        optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=0.0001)
+        loss = get_loss_function(dataset.labels, self.score, loss_params, OptimezerMixin)
+        loss = get_loss_added_regularization(self.weights, loss, loss_params, OptimezerMixin)
+        optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=opt_params.learning_rate)
         train = optimizer.minimize(loss)
 
         init = tf.compat.v1.global_variables_initializer()
