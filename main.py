@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     # training
     loss = LossFunctionParams(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.l2, decay=5 * 10e-4)
-    iteration = IterationParams(epoch=10, batch_size=32)
+    iteration = IterationParams(epoch=10, batch_size=256)
     opt = OptimizationParams(learning_rate=10e-2, momentum=0.9)
     train_params = TrainingParams(loss, iteration, opt)
 

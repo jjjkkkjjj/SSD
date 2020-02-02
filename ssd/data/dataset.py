@@ -5,7 +5,7 @@ from ..params.training import IterationParams
 import numpy as np
 
 class DataSet(Object):
-    def __init__(self, train_X, train_labels, test_X, test_labels):
+    def __init__(self, train_X, train_labels, test_X, test_labels, class_num):
         self.train_X = np.array(check_type(train_X, 'train_X', (list, np.ndarray), DataSet, funcnames='__init__'))
         self.train_labels = np.array(check_type(train_labels, 'train_labels', (list, np.ndarray), DataSet, funcnames='__init__'))
         # error handling when X and labels size is not same
@@ -13,6 +13,7 @@ class DataSet(Object):
         self.test_X = np.array(check_type(test_X, 'test_X', (list, np.ndarray), DataSet, funcnames='__init__'))
         self.test_labels = np.array(check_type(test_labels, 'test_labels', (list, np.ndarray), DataSet, funcnames='__init__'))
 
+        self.class_num = check_type(class_num, 'class_num', int, DataSet, funcnames='__init__')
 
     @property
     def count_train(self):
@@ -20,6 +21,14 @@ class DataSet(Object):
     @property
     def count_test(self):
         return len(self.test_labels)
+
+    @property
+    def train_one_hotted_labels(self):
+        return self.__one_hot_encode(self.train_labels)
+    @property
+    def test_one_hotted_labels(self):
+        return self.__one_hot_encode(self.train_labels)
+
     """
     must make iterator
     """
@@ -39,3 +48,8 @@ class DataSet(Object):
 
         return EpochIterator(_iter_params, self, _random_by_epoch)
 
+    def __one_hot_encode(self, labels):
+        labels_count = len(labels)
+        ret = np.zeros((labels_count, self.class_num))
+        ret[range(labels_count), labels] = 1
+        return ret

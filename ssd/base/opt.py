@@ -9,6 +9,7 @@ import tensorflow as tf
 import logging
 
 class OptimezerMixin:
+    input_layer: tf.compat.v1.placeholder
     score: tf.Tensor
     weights: list
     params: TrainingParams
@@ -22,8 +23,11 @@ class OptimezerMixin:
         opt_params = self.params.opt_params
 
         # set dataset
-        dataset = DataSet(train_X, train_labels, test_X, test_labels)
+        dataset = DataSet(train_X, train_labels, test_X, test_labels, 10)
 
+        # define variable without value in train
+        input = self.input_layer
+        # must be variablized
         y_true = tf.compat.v1.placeholder(tf.float32, shape=[None, 10])
 
 
@@ -40,19 +44,33 @@ class OptimezerMixin:
         optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=opt_params.learning_rate)
         objective_function = optimizer.minimize(loss)
 
+
+
         init = tf.compat.v1.global_variables_initializer()
 
         # training
         with tf.compat.v1.Session() as session:
+            with tf.name_scope('summary'):
+                tf.summary.scalar('loss', loss)
+                merged = tf.summary.merge_all()
+                writer = tf.summary.FileWriter('./logs', session.graph)
+
             session.run(init)
 
             for epoch in dataset.epoch_iterator(iter_params, random_by_epoch=True):
                 epoch: EpochIterator
                 logging.info('\nEpoch: {0}\n'.format(epoch.epoch_now))
 
-                for X, labels in epoch.batch_iterator():
-                    session.run(objective_function, feed_dict={'x': x, 'y_true': labels, 'keep_prob': 0.5})
+                for X, labels, batch in epoch.batch_iterator():
+                    batch: BatchIterator
+                    logging.info('batch: {0}/{1}'.format(batch.iteration_now, batch.iteration))
+                    session.run(objective_function, feed_dict={input: X, y_true: labels})# 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
 
+                matches = tf.equal(tf.argmax(self.score, 1), tf.argmax(y_true, 1))
+                acc = tf.reduce_mean(tf.cast(matches, tf.float32))
+
+                test_acc = acc.eval(feed_dict={'x': dataset.test_X, 'y_true': dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
+                logging.info('accuracy: {0}'.format(test_acc))
 
 
             """

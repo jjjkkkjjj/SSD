@@ -31,6 +31,9 @@ class Model(Architecture, OptimezerMixin):
     def layers(self):
         return self.__layers
     @property
+    def input_layer(self):
+        return self.layers[0]
+    @property
     def weights(self):
         return self.__weights
     @property

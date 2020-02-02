@@ -32,8 +32,8 @@ class TrainIterator:
     def test_X(self):
         return self._dataset.test_X
     @property
-    def test_labels(self):
-        return self._dataset.test_labels
+    def test_one_hotted_labels(self):
+        return self._dataset.test_one_hotted_labels
     
     # for parameter
     @property
@@ -45,7 +45,9 @@ class TrainIterator:
     @property
     def batch_size(self):
         return self._iter_params.batch_size
-    
+
+    def __iter__(self):
+        pass
     
     def __next__(self):
         pass
@@ -63,8 +65,8 @@ class EpochIterator(TrainIterator):
     def onlineTrain_X(self):
         return self._dataset.train_X
     @property
-    def onlineTrain_labels(self):
-        return self._dataset.train_labels
+    def onlineTrain_one_hotted_labels(self):
+        return self._dataset.train_one_hotted_labels
 
     # for parameter
     @property
@@ -77,7 +79,10 @@ class EpochIterator(TrainIterator):
 
     def batch_iterator(self):
 
-        return BatchIterator(self.epoch_now, self._iter_params, self._dataset)
+        return BatchIterator(self.epoch_now, self._iter_params, self._dataset, self.random_by_epoch)
+
+    def __iter__(self):
+        return self
 
     def __next__(self):
         if self.epoch_now < self.epoch:
@@ -109,10 +114,14 @@ class BatchIterator(TrainIterator):
     def iteration_now(self, value):
         self._iter_num = value
 
+
+    def __iter__(self):
+        return self
+
     """
     :returns
         train_X         : np.ndarray
-        train_labels    : np.ndarray
+        train_one_hotted_labels    : np.ndarray
     """
     def __next__(self):
         if self.iteration_now < self.iteration:
@@ -121,7 +130,7 @@ class BatchIterator(TrainIterator):
             indices = self.__indices[init_index:init_index + self.batch_size]
 
             train_X = self._dataset.train_X[indices]
-            train_labels = self._dataset.train_labels[indices]
+            train_labels = self._dataset.train_one_hotted_labels[indices]
             """
             below condition isn't needed. see below example
             >>> a=np.arange(10)
@@ -144,6 +153,6 @@ class BatchIterator(TrainIterator):
             """
             self.iteration_now += 1
 
-            return train_X, train_labels
+            return train_X, train_labels, self
         else:
             raise StopIteration
