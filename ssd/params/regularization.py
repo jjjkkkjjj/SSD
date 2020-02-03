@@ -5,8 +5,8 @@ from ..params.training import LossFunctionParams, LossFuncType, LossRegularizati
 import tensorflow as tf
 import logging
 
-def get_loss_added_regularization(weights, loss, loss_params, cls):
-    lossfunction = check_type(loss_params, 'loss_params', LossFunctionParams, cls)
+def get_loss_added_regularization(weights, loss, loss_params, ins):
+    lossfunction = check_type(loss_params, 'loss_params', LossFunctionParams, ins)
 
     # add regularization term
     if lossfunction.reg_type == LossRegularizationType.none:

@@ -5,8 +5,8 @@ from ..params.training import LossFunctionParams, LossFuncType, LossRegularizati
 import tensorflow as tf
 import logging
 
-def get_loss_function(y_true, score, loss_params, cls):
-    lossfunction = check_type(loss_params, 'loss_params', LossFunctionParams, cls)
+def get_loss_function(y_true, score, loss_params, ins):
+    lossfunction = check_type(loss_params, 'loss_params', LossFunctionParams, ins)
 
     # create loss
     if lossfunction.func_type == LossFuncType.square_error:

@@ -24,7 +24,7 @@ class Layer(Object):
 class Input(Layer):
     def __init__(self, name, shape):
         super().__init__(name, layertype=Layer.LayerType.input)
-        self.shape = check_type(shape, 'shape', (list, np.ndarray), Input, '__init__')
+        self.shape = check_type(shape, 'shape', (list, np.ndarray), self, '__init__')
 
     @property
     def width(self):
@@ -41,10 +41,10 @@ strides :array-like
 class Convolution(Layer):
     def __init__(self, name, kernel, kernelnums, strides, padding='SAME'):
         super().__init__(name, layertype=Layer.LayerType.convolution)
-        self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), Convolution, '__init__')
-        self.kernelnums = check_type(kernelnums, 'kernelnums', int, Convolution, '__init__')
-        self.strides = check_type(strides, 'strides', (list, np.ndarray), Convolution, '__init__')
-        self.padding = check_name(padding, 'padding', ['SAME'], Convolution, '__init__')
+        self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), self, '__init__')
+        self.kernelnums = check_type(kernelnums, 'kernelnums', int, self, '__init__')
+        self.strides = check_type(strides, 'strides', (list, np.ndarray), self, '__init__')
+        self.padding = check_name(padding, 'padding', ['SAME'], self, '__init__')
 
     @property
     def kernel_width(self):
@@ -64,9 +64,9 @@ below class must be duplicated
 class MaxPooling(Layer):
     def __init__(self, name, kernel, strides, padding='VALID'):
         super().__init__(name, layertype=Layer.LayerType.maxpooling)
-        self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), MaxPooling, '__init__')
-        self.strides = check_type(strides, 'strides', (list, np.ndarray), MaxPooling, '__init__')
-        self.padding = check_name(padding, 'padding', ['VALID'], MaxPooling, '__init__')
+        self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), self, '__init__')
+        self.strides = check_type(strides, 'strides', (list, np.ndarray), self, '__init__')
+        self.padding = check_name(padding, 'padding', ['VALID'], self, '__init__')
 
     @property
     def kernel_width(self):
@@ -88,22 +88,22 @@ class Flatten(Layer):
 class FullyConnection(Layer):
     def __init__(self, name, outputnums, activationfunc='relu'):
         super().__init__(name, layertype=Layer.LayerType.fullyconnection)
-        self.outputnums = check_type(outputnums, 'outputnums', int, FullyConnection, '__init__')
-        self.activationfunc = check_name(activationfunc, 'activationfunc', ['relu'], FullyConnection, '__init__')
+        self.outputnums = check_type(outputnums, 'outputnums', int, self, '__init__')
+        self.activationfunc = check_name(activationfunc, 'activationfunc', ['relu'], self, '__init__')
 
 class DropOut(Layer):
     def __init__(self, name, rate):
         super().__init__(name, layertype=Layer.LayerType.dropout)
-        self.rate = float(check_type(rate, 'rate', (float, int), DropOut, '__init__'))
+        self.rate = float(check_type(rate, 'rate', (float, int), self, '__init__'))
 """
 Attributes
 params: array-like of Layer
 """
 class Architecture(Object):
     def __init__(self, input_model, layer_models, output_model):
-        self.__input_model = check_type(input_model, 'input_model', Input, Architecture, '__init__')
-        self.__hidden_models = check_layer_models(layer_models)
-        self.__output_model = check_type(output_model, 'output_model', (FullyConnection), Architecture, '__init__')
+        self.__input_model = check_type(input_model, 'input_model', Input, self, '__init__')
+        self.__hidden_models = check_layer_models(layer_models, self)
+        self.__output_model = check_type(output_model, 'output_model', (FullyConnection), self, '__init__')
 
     @property
     def input_model(self):

@@ -17,9 +17,9 @@ return:
 raise:
     ArgmentError: if arg's instance doesn't contain 'instances', raise ArgmentError
 """
-def check_type(arg, argname, classes, layercls, funcnames=''):
+def check_type(arg, argname, classes, ins, funcnames=''):
     if not isinstance(arg, classes):
-        message = _emsg_type_check(arg, argname, classes, layercls, funcnames)
+        message = _emsg_type_check(arg, argname, classes, ins, funcnames)
         raise ArgumentTypeError(message)
     return arg
 """
@@ -27,11 +27,11 @@ see above
 param:
     default : if arg is None, return default
 """
-def check_type_including_none(arg, argname, classes, layercls, default, funcnames=''):
+def check_type_including_none(arg, argname, classes, ins, default, funcnames=''):
     if arg is None:
         return default
     else:
-        return check_type(arg, argname, classes, layercls, funcnames)
+        return check_type(arg, argname, classes, ins, funcnames)
 
 """
 param:
@@ -46,11 +46,11 @@ return:
 raise:
     ArgumentNameError   : if valid_names doesn't contains arg, raise ArgumentNameError
 """
-def check_name(arg, argname, valid_names, layercls, funcnames=''):
-    check_type(arg, argname, str, layercls, funcnames)
+def check_name(arg, argname, valid_names, ins, funcnames=''):
+    check_type(arg, argname, str, ins, funcnames)
 
     if not arg in valid_names:
-        message = _emsg_name_check(arg, argname, valid_names, layercls, funcnames)
+        message = _emsg_name_check(arg, argname, valid_names, ins, funcnames)
         raise ArgumentNameError(message)
 
     return arg
@@ -59,11 +59,11 @@ see above
 param:
     default : if arg is None, return default
 """
-def check_name_including_none(arg, argname, valid_names, layercls, default, funcnames=''):
+def check_name_including_none(arg, argname, valid_names, ins, default, funcnames=''):
     if arg is None:
         return default
     else:
-        return check_name(arg, argname, valid_names, layercls, funcnames)
+        return check_name(arg, argname, valid_names, ins, funcnames)
 
 """
 param:
@@ -75,11 +75,11 @@ return:
 raise:
     ArgumentTypeError   : if all layers' elements isn't inherited Layer, raise ArgumentTypeError
 """
-def check_layer_models(layer_models):
-    from ...base.architecture import Architecture, Layer
-    check_type(layer_models, 'layers', (list, np.ndarray), Architecture)
+def check_layer_models(layer_models, ins):
+    from ...base.architecture import Layer
+    check_type(layer_models, 'layers', (list, np.ndarray), ins)
     if not all(isinstance(layer_model, Layer) for layer_model in layer_models):
-        message = _emsg_check_layers_all(Architecture)
+        message = _emsg_check_layers_all(ins)
         raise ArgumentTypeError(message)
 
     """
@@ -106,8 +106,8 @@ raise:
 """
 
 
-def check_enum(arg, argname, enum, layercls, funcnames=''):
+def check_enum(arg, argname, enum, ins, funcnames=''):
     if not isinstance(arg, enum):
-        message = _emsg_enum_check(argname, enum, layercls, funcnames)
+        message = _emsg_enum_check(argname, enum, ins, funcnames)
         raise ArgumentEnumError(message)
     return arg

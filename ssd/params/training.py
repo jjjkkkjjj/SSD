@@ -25,9 +25,9 @@ class LossFunctionParams(Object):
 
     #loss function and regularization
     def __init__(self, func=LossFuncType.square_error, reg_type=LossRegularizationType.none, decay=10e-3):
-        self.func_type = check_enum(func, 'func', LossFuncType, LossFunctionParams, '__init__')
-        self.reg_type = check_enum(reg_type, 'reg_type', LossRegularizationType, LossFunctionParams, '__init__')
-        self.decay = check_type(decay, 'decay', float, LossFunctionParams, '__init__')
+        self.func_type = check_enum(func, 'func', LossFuncType, self, '__init__')
+        self.reg_type = check_enum(reg_type, 'reg_type', LossRegularizationType, self, '__init__')
+        self.decay = check_type(decay, 'decay', float, self, '__init__')
 
 
 
@@ -37,16 +37,16 @@ class IterationParams(Object):
     epoch: int
     batch_size: int
     def __init__(self, epoch=50, batch_size=256):
-        self.epoch = check_type(epoch, 'epoch', int, IterationParams, '__init__')
-        self.batch_size = check_type_including_none(batch_size, 'batch_size', int, IterationParams, funcnames='__init__', default=None)
+        self.epoch = check_type(epoch, 'epoch', int, self, '__init__')
+        self.batch_size = check_type_including_none(batch_size, 'batch_size', int, self, funcnames='__init__', default=None)
 
 class OptimizationParams(Object):
     # momentum, learning rate
     learning_rate: float
     momentum: float
     def __init__(self, learning_rate=10e-2, momentum=0.8):
-        self.learning_rate = check_type(learning_rate, 'learning_rate', float, OptimizationParams, '__init__')
-        self.momentum = check_type(momentum, 'momentum', float, OptimizationParams, '__init__')
+        self.learning_rate = check_type(learning_rate, 'learning_rate', float, self, '__init__')
+        self.momentum = check_type(momentum, 'momentum', float, self, '__init__')
 
 class TrainingParams(Object):
     lossfunc_params: LossFunctionParams
@@ -54,9 +54,9 @@ class TrainingParams(Object):
     opt_params: OptimizationParams
 
     def __init__(self, lossfunc_params=None, iter_params=None, opt_params=None):
-        self.lossfunc_params = check_type_including_none(lossfunc_params, 'lossfunc_params', LossFunctionParams, TrainingParams, default=LossFunctionParams(), funcnames='__init__')
-        self.iter_params = check_type_including_none(iter_params, 'iter_params', IterationParams, TrainingParams, default=IterationParams(), funcnames='__init__')
-        self.opt_params = check_type_including_none(opt_params, 'opt_params', OptimizationParams, TrainingParams, default=OptimizationParams(), funcnames='__init__')
+        self.lossfunc_params = check_type_including_none(lossfunc_params, 'lossfunc_params', LossFunctionParams, self, default=LossFunctionParams(), funcnames='__init__')
+        self.iter_params = check_type_including_none(iter_params, 'iter_params', IterationParams, self, default=IterationParams(), funcnames='__init__')
+        self.opt_params = check_type_including_none(opt_params, 'opt_params', OptimizationParams, self, default=OptimizationParams(), funcnames='__init__')
 
     # getter and setter will be implemented in future
     """

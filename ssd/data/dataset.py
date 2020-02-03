@@ -6,12 +6,12 @@ import numpy as np
 
 class DataSet(Object):
     def __init__(self, train_X, train_labels, test_X, test_labels):
-        self.train_X = np.array(check_type(train_X, 'train_X', (list, np.ndarray), DataSet, funcnames='__init__'))
-        self.train_labels = np.array(check_type(train_labels, 'train_labels', (list, np.ndarray), DataSet, funcnames='__init__'))
+        self.train_X = np.array(check_type(train_X, 'train_X', (list, np.ndarray), self, funcnames='__init__'))
+        self.train_labels = np.array(check_type(train_labels, 'train_labels', (list, np.ndarray), self, funcnames='__init__'))
         # error handling when X and labels size is not same
 
-        self.test_X = np.array(check_type(test_X, 'test_X', (list, np.ndarray), DataSet, funcnames='__init__'))
-        self.test_labels = np.array(check_type(test_labels, 'test_labels', (list, np.ndarray), DataSet, funcnames='__init__'))
+        self.test_X = np.array(check_type(test_X, 'test_X', (list, np.ndarray), self, funcnames='__init__'))
+        self.test_labels = np.array(check_type(test_labels, 'test_labels', (list, np.ndarray), self, funcnames='__init__'))
 
     @property
     def count_train(self):
@@ -24,15 +24,15 @@ class DataSet(Object):
     def epoch_iterator(self, iter_params, random_by_epoch=True):
         from .iterator import EpochIterator
 
-        _ = check_type(iter_params, 'iter_params', IterationParams, DataSet, 'train')
-        _ = check_type(random_by_epoch, 'random_by_epoch', bool, DataSet, 'train')
+        _ = check_type(iter_params, 'iter_params', IterationParams, self, 'train')
+        _ = check_type(random_by_epoch, 'random_by_epoch', bool, self, 'train')
 
         return EpochIterator(iter_params, self, random_by_epoch)
 
 class DatasetEncoder(DataSet):
     def __init__(self, shape, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.shape = check_type(shape, 'shape', (list, np.ndarray, tuple), DatasetEncoder, funcnames='__init__')
+        self.shape = check_type(shape, 'shape', (list, np.ndarray, tuple), self, funcnames='__init__')
 
 
     def epoch_iterator(self, iter_params, random_by_epoch=True):
@@ -44,7 +44,7 @@ class DatasetEncoder(DataSet):
 class DatasetClassification(DataSet):
     def __init__(self, class_num, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.class_num = check_type(class_num, 'class_num', int, DatasetClassification, funcnames='__init__')
+        self.class_num = check_type(class_num, 'class_num', int, self, funcnames='__init__')
 
     @property
     def train_one_hotted_labels(self):

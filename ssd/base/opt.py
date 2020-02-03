@@ -15,10 +15,10 @@ class OptimezerMixin:
     params: TrainingParams
 
     def train(self, dataset, params):
-        dataset = check_type(dataset, 'dataset', DataSet, OptimezerMixin, funcnames='train')
+        dataset = check_type(dataset, 'dataset', DataSet, self, funcnames='train')
         dataset: DatasetClassification
         # get params for training
-        self.params = check_type(params, 'params', TrainingParams, OptimezerMixin, funcnames='train')
+        self.params = check_type(params, 'params', TrainingParams, self, funcnames='train')
 
         iter_params = self.params.iter_params
         loss_params = self.params.lossfunc_params
@@ -38,8 +38,8 @@ class OptimezerMixin:
         """
 
         # set objective function
-        loss = get_loss_function(y_true, self.score, loss_params, OptimezerMixin)
-        loss = get_loss_added_regularization(self.weights, loss, loss_params, OptimezerMixin)
+        loss = get_loss_function(y_true, self.score, loss_params, self)
+        loss = get_loss_added_regularization(self.weights, loss, loss_params, self)
         optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=opt_params.learning_rate)
         objective_function = optimizer.minimize(loss)
 
@@ -70,20 +70,4 @@ class OptimezerMixin:
 
                 test_acc = acc.eval(feed_dict={'x': dataset.test_X, 'y_true': dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
                 logging.info('accuracy: {0}'.format(test_acc))
-
-
-            """
-            for i in range(iter_params.epoch):
-                logging.info('\nEpoch: {0}\n'.format(i))
-
-                for j in range(0, len(dataset.labels), iter_params.batch_size):
-                    x, labels = dataset.batch(iter_params.batch_size, i)
-                    session.run(train, feed_dict={'x': x, 'y_true': labels, 'keep_prob': 0.5})
-
-                matches = tf.equal(tf.argmax(self.score, 1), tf.argmax(y_true, 1))
-                acc = tf.reduce_mean(tf.cast(matches, tf.float32))
-
-                test_acc = acc.eval(feed_dict={'x': dataset.test_X, 'y_true': dataset.test_labels, 'keep_prob': 1.0})
-                logging.info('accuracy: {0}'.format(test_acc))
-            """
 

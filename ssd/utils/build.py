@@ -1,20 +1,23 @@
 from ..base.architecture import *
 from ..utils.error.argchecker import check_type
+from ..utils.argutils import _get_typename
 
 import tensorflow as tf
 
 def input(input):
-    from ..base.model import Model
+    #from ..base.model import Model
 
-    check_type(input, 'input', Input, Model, funcnames='input')
+    #check_type(input, 'input', Input, Model, funcnames='input')
+    assert isinstance(input, Input), 'got {0}'.format(_get_typename(input))
     with tf.compat.v1.variable_scope(input.name):
         return tf.compat.v1.placeholder(tf.float32, shape=[None, input.height, input.width, 3])
 
 
 def convolution(input, convolution):
-    from ..base.model import Model
+    #from ..base.model import Model
 
-    check_type(convolution, 'convolution', Convolution, Model, funcnames='convolution')
+    #check_type(convolution, 'convolution', Convolution, Model, funcnames='convolution')
+    assert isinstance(convolution, Convolution), 'got {0}'.format(_get_typename(convolution))
     input_channels = int(input.get_shape()[-1])
     with tf.compat.v1.variable_scope(convolution.name):
         # get variable name's value in scope, if which doesn't exist create it
@@ -34,9 +37,10 @@ def convolution(input, convolution):
 
 
 def maxPooling(input, maxpooling):
-    from ..base.model import Model
+    #from ..base.model import Model
 
-    check_type(maxpooling, 'maxpooling', MaxPooling, Model, funcnames='maxpooling')
+    #check_type(maxpooling, 'maxpooling', MaxPooling, Model, funcnames='maxpooling')
+    assert isinstance(maxpooling, MaxPooling), 'got {0}'.format(_get_typename(maxpooling))
     with tf.compat.v1.variable_scope(maxpooling.name):
         return tf.nn.max_pool2d(input, ksize=[1, maxpooling.kernel_height, maxpooling.kernel_width, 1],
                             strides=[1, maxpooling.stride_height, maxpooling.stride_width, 1],
@@ -46,18 +50,20 @@ def maxPooling(input, maxpooling):
 # def batch_normalization(self):
 
 def flatten(input, flatten):
-    from ..base.model import Model
+    #from ..base.model import Model
 
-    check_type(flatten, 'flatten', Flatten, Model, funcnames='flatten')
+    #check_type(flatten, 'flatten', Flatten, Model, funcnames='flatten')
+    assert isinstance(flatten, Flatten), 'got {0}'.format(_get_typename(flatten))
     with tf.compat.v1.variable_scope(flatten.name):
         shape = np.array(input.get_shape().as_list()[1:])
         return tf.reshape(input, [-1, shape.prod()], name='Flatten')
 
 
 def fully_connection(input, fullyconnection):
-    from ..base.model import Model
+    #from ..base.model import Model
 
-    check_type(fullyconnection, 'fullyconnection', FullyConnection, Model, funcnames='fullyconnection')
+    #check_type(fullyconnection, 'fullyconnection', FullyConnection, Model, funcnames='fullyconnection')
+    assert isinstance(fullyconnection, FullyConnection), 'got {0}'.format(_get_typename(fullyconnection))
 
     inputnums = int(input.get_shape()[-1])
     with tf.compat.v1.variable_scope(fullyconnection.name):
@@ -84,8 +90,10 @@ def fully_connection(input, fullyconnection):
 
 
 def dropout(input, dropout):
-    from ..base.model import Model
+    #from ..base.model import Model
 
-    check_type(dropout, 'dropout', DropOut, Model, funcnames='dropout')
+    #check_type(dropout, 'dropout', DropOut, Model, funcnames='dropout')
+    assert isinstance(dropout, DropOut), 'got {0}'.format(_get_typename(dropout))
+
     with tf.compat.v1.variable_scope(dropout.name):
         return tf.nn.dropout(input, rate=dropout.rate, name='Dropout')
