@@ -10,7 +10,9 @@ def input(input):
     #check_type(input, 'input', Input, Model, funcnames='input')
     assert isinstance(input, Input), 'got {0}'.format(_get_typename(input))
     with tf.compat.v1.variable_scope(input.name):
-        return tf.compat.v1.placeholder(tf.float32, shape=[None, input.height, input.width, 3])
+        shape = [None]
+        shape.extend(input.shape)
+        return tf.compat.v1.placeholder(tf.float32, shape=shape)
 
 
 def convolution(input, convolution):

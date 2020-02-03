@@ -23,10 +23,12 @@ def get_loss_added_regularization(weights, loss, loss_params, ins):
 
 def add_l1(decay, weights, loss):
     ret_loss = loss #+ decay * tf.reduce_sum(weights)
-    l1_weights = [tf.compat.v1.abs(weight) for weight in weights]
+    # Sigma |w_i|
+    l1_weights = [tf.reduce_sum(tf.compat.v1.abs(weight)) for weight in weights]
     return ret_loss + decay * tf.compat.v1.add_n(l1_weights)
 
 def add_l2(decay, weights, loss):
     ret_loss = loss #+ decay * tf.reduce_sum(tf.abs(weights))
+    # 1/2 * w**2
     l2_weights = [tf.nn.l2_loss(weight) for weight in weights]
     return ret_loss + decay * tf.compat.v1.add_n(l2_weights)

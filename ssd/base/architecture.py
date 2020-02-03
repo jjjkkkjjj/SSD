@@ -22,16 +22,24 @@ class Layer(Object):
         dropout = 5
 
 class Input(Layer):
-    def __init__(self, name, shape):
+    def __init__(self, name, rect, channel):
         super().__init__(name, layertype=Layer.LayerType.input)
-        self.shape = check_type(shape, 'shape', (list, np.ndarray), self, '__init__')
+        self.rect = check_type(rect, 'rect', (list, np.ndarray), self, '__init__')
+        self.channel = check_type(channel, 'channel', int, self, '__init__')
 
     @property
     def width(self):
-        return self.shape[1]
+        return self.rect[1]
     @property
     def height(self):
-        return self.shape[0]
+        return self.rect[0]
+
+    @property
+    def shape(self):
+        shape = []
+        shape.extend(self.rect)
+        shape.append(self.channel)
+        return shape
 """
 Attributes
 kernel  :array-like
