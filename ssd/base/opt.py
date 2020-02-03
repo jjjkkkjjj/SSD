@@ -68,6 +68,6 @@ class OptimezerMixin:
                 matches = tf.equal(tf.argmax(self.score, 1), tf.argmax(y_true, 1))
                 acc = tf.reduce_mean(tf.cast(matches, tf.float32))
 
-                test_acc = acc.eval(feed_dict={'x': dataset.test_X, 'y_true': dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
+                test_acc = acc.eval(feed_dict={input: dataset.test_X, y_true: dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
                 logging.info('accuracy: {0}'.format(test_acc))
 

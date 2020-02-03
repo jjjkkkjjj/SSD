@@ -52,7 +52,7 @@ class DatasetClassification(DataSet):
 
     @property
     def test_one_hotted_labels(self):
-        return self.__one_hot_encode(self.train_labels)
+        return self.__one_hot_encode(self.test_labels)
 
     def __one_hot_encode(self, labels):
         labels_count = len(labels)
