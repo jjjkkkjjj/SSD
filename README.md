@@ -9,6 +9,6 @@ check "Collect run-time types information for code insight"
 - Anaconda
 
   ```bash
-  conda install numpy=1.16.4 tensorflow=1.14.0
+   pip install tensorflow-gpu==1.14 numpy==1.16.4
   ```
 
