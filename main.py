@@ -1,6 +1,7 @@
 from ssd.vgg16 import VGG16
 from dataset.cifar10 import data
 from ssd.params.training import *
+from ssd.data.dataset import DatasetClassification
 
 if __name__ == '__main__':
     vgg = VGG16(10, verbose=True)
@@ -12,4 +13,5 @@ if __name__ == '__main__':
     opt = OptimizationParams(learning_rate=10e-2, momentum=0.9)
     train_params = TrainingParams(loss, iteration, opt)
 
-    vgg.train(train_img, train_labels, test_img, test_labels, params=train_params)
+    dataset = DatasetClassification(10, train_img, train_labels, test_img, test_labels)
+    vgg.train(dataset, params=train_params)

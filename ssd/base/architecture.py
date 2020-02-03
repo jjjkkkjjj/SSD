@@ -3,7 +3,7 @@ from .object import Object
 
 from enum import Enum
 import numpy as np
-
+import logging
 #import warnings
 #warnings.filterwarnings('ignore',category=FutureWarning)
 
@@ -116,4 +116,13 @@ class Architecture(Object):
     def hidden_models(self):
         return self.__hidden_models
 
-
+    """
+    :return
+        tuple  : output shape
+    """
+    @property
+    def output_shape(self):
+        if self.output_model.type == Layer.LayerType.fullyconnection:
+            return (self.output_model.outputnums)
+        else:
+            logging.warning('Cannot get output shape because implementation has not be defined')

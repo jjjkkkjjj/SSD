@@ -14,7 +14,9 @@ class OptimezerMixin:
     weights: list
     params: TrainingParams
 
-    def train(self, train_X, train_labels, test_X, test_labels, params):
+    def train(self, dataset, params):
+        dataset = check_type(dataset, 'dataset', DataSet, OptimezerMixin, funcnames='train')
+        dataset: DatasetClassification
         # get params for training
         self.params = check_type(params, 'params', TrainingParams, OptimezerMixin, funcnames='train')
 
@@ -22,13 +24,10 @@ class OptimezerMixin:
         loss_params = self.params.lossfunc_params
         opt_params = self.params.opt_params
 
-        # set dataset
-        dataset = DataSet(train_X, train_labels, test_X, test_labels, 10)
-
         # define variable without value in train
         input = self.input_layer
         # must be variablized
-        y_true = tf.compat.v1.placeholder(tf.float32, shape=[None, 10])
+        y_true = tf.compat.v1.placeholder(tf.float32, shape=[None, dataset.class_num])
 
 
         """
@@ -51,20 +50,20 @@ class OptimezerMixin:
         # training
         with tf.compat.v1.Session() as session:
             with tf.name_scope('summary'):
-                tf.summary.scalar('loss', loss)
-                merged = tf.summary.merge_all()
-                writer = tf.summary.FileWriter('./logs', session.graph)
+                tf.compat.v1.summary.scalar('loss', loss)
+                merged = tf.compat.v1.summary.merge_all()
+                writer = tf.compat.v1.summary.FileWriter('./logs', session.graph)
 
             session.run(init)
 
             for epoch in dataset.epoch_iterator(iter_params, random_by_epoch=True):
-                epoch: EpochIterator
+                epoch: EpochIteratorClassification
                 logging.info('\nEpoch: {0}\n'.format(epoch.epoch_now))
 
-                for X, labels, batch in epoch.batch_iterator():
-                    batch: BatchIterator
+                for batch in epoch.batch_iterator():
+                    batch: BatchIteratorClassification
                     logging.info('batch: {0}/{1}'.format(batch.iteration_now, batch.iteration))
-                    session.run(objective_function, feed_dict={input: X, y_true: labels})# 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
+                    session.run(objective_function, feed_dict={input: batch.X, y_true: batch.one_hotted_labels})# 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
 
                 matches = tf.equal(tf.argmax(self.score, 1), tf.argmax(y_true, 1))
                 acc = tf.reduce_mean(tf.cast(matches, tf.float32))
