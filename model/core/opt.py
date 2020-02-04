@@ -6,6 +6,7 @@ from ..common.utils.argchecker import *
 
 import tensorflow as tf
 import logging
+import os
 
 class OptimezerMixin:
     input_layer: tf.compat.v1.placeholder
@@ -13,7 +14,7 @@ class OptimezerMixin:
     weights: list
     params: TrainingParams
 
-    def train(self, dataset, params):
+    def train(self, dataset, params, savedir=None):
         dataset = check_type(dataset, 'dataset', DataSet, self, funcnames='train')
 
         # type must be checked
@@ -79,3 +80,5 @@ class OptimezerMixin:
                 #test_acc = acc.eval(feed_dict={input: dataset.test_X, y_true: dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
                 logging.info('\nepoch: {0}/{1}, loss: {2:2f}, test accuracy: {3:.2f}\n'.format(epoch.epoch_now, epoch.epoch, loss_val, test_acc))
 
+                if savedir is not None and os.path.isdir(savedir):
+                    tf.compat.v1.train.Saver().save(session, './weights/epoch{0}_loss{1}_acc{2}'.format(epoch.epoch_now, loss_val, test_acc))

@@ -31,5 +31,5 @@ if __name__== '__main__':
 
     dataset = DatasetClassification(10, train_images, train_labels, test_images, test_labels)
 
-    model.train(dataset, train_params)
+    model.train(dataset, train_params, savedir='./weights')
     # epoch: 5/5, loss: 1.513185, test accuracy: 0.95
