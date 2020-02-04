@@ -74,7 +74,7 @@ class MaxPooling(Layer):
         super().__init__(name, layertype=Layer.LayerType.maxpooling)
         self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), self, '__init__')
         self.strides = check_type(strides, 'strides', (list, np.ndarray), self, '__init__')
-        self.padding = check_name(padding, 'padding', ['VALID'], self, '__init__')
+        self.padding = check_name(padding, 'padding', ['VALID', 'SAME'], self, '__init__')
 
     @property
     def kernel_width(self):

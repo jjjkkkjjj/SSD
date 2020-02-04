@@ -1,5 +1,5 @@
 from ssd.vgg16 import VGG16
-from dataset.cifar10 import data
+from dataset.mnist import data
 from ssd.params.training import *
 from ssd.data.dataset import DatasetClassification
 
@@ -9,8 +9,8 @@ if __name__ == '__main__':
 
     # training
     loss = LossFunctionParams(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.l2, decay=5 * 10e-4)
-    iteration = IterationParams(epoch=10, batch_size=256)
-    opt = OptimizationParams(learning_rate=10e-2, momentum=0.9)
+    iteration = IterationParams(epoch=5, batch_size=256)
+    opt = OptimizationParams(learning_rate=10e-3, momentum=0.9)
     train_params = TrainingParams(loss, iteration, opt)
 
     dataset = DatasetClassification(10, train_img, train_labels, test_img, test_labels)
