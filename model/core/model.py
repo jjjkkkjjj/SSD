@@ -15,8 +15,8 @@ params:
 
 class Model(Architecture, OptimezerMixin):
 
-    def __init__(self, input_model, hidden_models, output_model, verbose=True):
-        super().__init__(input_model, hidden_models, output_model)
+    def __init__(self, models, verbose=True):
+        super().__init__(models)
         self.__layers = []
 
         self.verbose = verbose
@@ -57,6 +57,7 @@ class Model(Architecture, OptimezerMixin):
 
         logging.debug("\nBuilding model was succeeded.\n")
 
+        return self
 
     @property
     def score(self):

@@ -5,7 +5,7 @@ from model.dataset.dataset import DatasetClassification
 from model.train.optimizer import *
 
 if __name__ == '__main__':
-    vgg = VGG16(10, verbose=True)
+    vgg = VGG16(10, verbose=True).build()
     train_img, train_labels, test_img, test_labels = data()
 
     # training

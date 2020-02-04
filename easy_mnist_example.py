@@ -6,18 +6,17 @@ from model.train.params import *
 from model.train.optimizer import *
 
 class MNIST(Model):
-    _hidden_models = [
-        Flatten('flatten1'),
-        FullyConnection('fc1', outputnums=512, activationfunc='relu'),
-        DropOut('do1', 0.2)
 
-    ]
     def __init__(self, *args, **kwargs):
-        super().__init__(input_model=Input('input', rect=[28, 28], channel=1),
-                         hidden_models=self._hidden_models,
-                         output_model=FullyConnection('output', outputnums=10, activationfunc='softmax'), *args, **kwargs)
+        models = [
+            Input('input', rect=[28, 28], channel=1),
+            Flatten('flatten1'),
+            FullyConnection('fc1', outputnums=512, activationfunc='relu'),
+            DropOut('do1', 0.2),
+            FullyConnection('output', outputnums=10, activationfunc='softmax')
+        ]
+        super().__init__(models, *args, **kwargs)
 
-        self.build()
 
 def train():
     model = MNIST()
@@ -34,7 +33,7 @@ def train():
     # epoch: 5/5, loss: 1.513185, test accuracy: 0.95
 
 def predict():
-    model = MNIST()
+    model = MNIST().build()
 
     train_images, train_labels, test_images, test_labels = data()
 

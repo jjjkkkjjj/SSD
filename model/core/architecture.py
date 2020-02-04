@@ -1,4 +1,5 @@
 from ..common.utils.argchecker import *
+from ..common.utils.typename import _get_typename
 from .object import Object
 
 from enum import Enum
@@ -108,21 +109,39 @@ Attributes
 params: array-like of Layer
 """
 class Architecture(Object):
-    def __init__(self, input_model, layer_models, output_model):
-        self.__input_model = check_type(input_model, 'input_model', Input, self, '__init__')
-        self.__hidden_models = check_layer_models(layer_models, self)
-        self.__output_model = check_type(output_model, 'output_model', (FullyConnection), self, '__init__')
+    def __init__(self, models):
+        _ = check_type(models, 'models', list, self, '__init__')
+        if len(models) > 0:
+            try:
+                _ = check_type(models[0], 'models[0]', Input, self, '__init__')
+            except ArgumentTypeError:
+                message = 'models\' first element must be Input, but got {0}'.format(_get_typename(models[0]))
+                raise ArgumentTypeError(message)
+        self._models = models
+
+    @property
+    def all_models(self):
+        return self._models
 
     @property
     def input_model(self):
-        return self.__input_model
+        if len(self._models) == 0:
+            return None
+        else:
+            return self._models[0]
     @property
     def output_model(self):
-        return self.__output_model
+        if len(self._models) == 0:
+            return None
+        else:
+            return self._models[-1]
 
     @property
     def hidden_models(self):
-        return self.__hidden_models
+        if len(self._models) < 3:
+            return None
+        else:
+            return self._models[1:-1]
 
     """
     :return

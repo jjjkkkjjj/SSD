@@ -11,28 +11,29 @@ see https://www.tensorflow.org/tutorials/images/cnn?hl=ja
 
 
 class MNIST(Model):
-    _hidden_models = [
-        Convolution('conv1_1', kernel=[3, 3], kernelnums=32, strides=[1, 1]),
-        MaxPooling('pool1', kernel=[2, 2], strides=[2, 2]),
 
-        Convolution('conv2_1', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
-        MaxPooling('pool2', kernel=[2, 2], strides=[2, 2]),
-
-        Convolution('conv3_1', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
-        Flatten('flatten1'),
-        FullyConnection('fc4', outputnums=64, activationfunc='relu'),
-
-    ]
     def __init__(self, *args, **kwargs):
-        super().__init__(input_model=Input('input', rect=[28, 28], channel=1),
-                         hidden_models=self._hidden_models,
-                         output_model=FullyConnection('output', outputnums=10, activationfunc='softmax'), *args, **kwargs)
+        models = [
+            Input('input', rect=[28, 28], channel=1),
 
-        self.build()
+            Convolution('conv1_1', kernel=[3, 3], kernelnums=32, strides=[1, 1]),
+            MaxPooling('pool1', kernel=[2, 2], strides=[2, 2]),
+
+            Convolution('conv2_1', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
+            MaxPooling('pool2', kernel=[2, 2], strides=[2, 2]),
+
+            Convolution('conv3_1', kernel=[3, 3], kernelnums=64, strides=[1, 1]),
+            Flatten('flatten1'),
+            FullyConnection('fc4', outputnums=64, activationfunc='relu'),
+
+            FullyConnection('output', outputnums=10, activationfunc='softmax')
+        ]
+        super().__init__(models, *args, **kwargs)
+
 
 
 if __name__== '__main__':
-    model = MNIST()
+    model = MNIST().build()
 
     train_images, train_labels, test_images, test_labels = data()
 
