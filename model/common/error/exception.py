@@ -9,3 +9,6 @@ class ArgumentNameError(Exception):
 
 class ArgumentEnumError(Exception):
     pass
+
+class UnTrainedError(Exception):
+    pass

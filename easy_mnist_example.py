@@ -19,8 +19,7 @@ class MNIST(Model):
 
         self.build()
 
-
-if __name__== '__main__':
+def train():
     model = MNIST()
 
     train_images, train_labels, test_images, test_labels = data()
@@ -33,3 +32,16 @@ if __name__== '__main__':
 
     model.train(dataset, train_params, savedir='./weights')
     # epoch: 5/5, loss: 1.513185, test accuracy: 0.95
+
+def predict():
+    model = MNIST()
+
+    train_images, train_labels, test_images, test_labels = data()
+
+    model.load('./weights/epoch5_loss1.5041388273239136_acc0.961899995803833')
+    predicts = model.predict(test_images)
+    print('acc: {0}%'.format((np.sum(predicts == test_labels) / len(test_labels))*100))
+    # acc: 95.98%
+if __name__== '__main__':
+    #train()
+    predict()

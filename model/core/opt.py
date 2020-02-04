@@ -51,34 +51,51 @@ class OptimezerMixin:
         init = tf.compat.v1.global_variables_initializer()
 
         # training
-        with tf.compat.v1.Session() as session:
-            with tf.name_scope('summary'):
-                tf.compat.v1.summary.scalar('loss', loss)
-                merged = tf.compat.v1.summary.merge_all()
-                writer = tf.compat.v1.summary.FileWriter('./logs', session.graph)
+        self.session = tf.compat.v1.Session()
+        with tf.name_scope('summary'):
+            tf.compat.v1.summary.scalar('loss', loss)
+            merged = tf.compat.v1.summary.merge_all()
+            writer = tf.compat.v1.summary.FileWriter('./logs', self.session.graph)
 
-            session.run(init)
+        self.session.run(init)
 
-            for epoch in dataset.epoch_iterator(opt_params):
-                epoch: EpochIteratorClassification
-                logging.info('\nEpoch: {0}\n'.format(epoch.epoch_now))
+        for epoch in dataset.epoch_iterator(opt_params):
+            epoch: EpochIteratorClassification
+            logging.info('\nEpoch: {0}\n'.format(epoch.epoch_now))
 
-                for batch in epoch.batch_iterator():
-                    batch: BatchIteratorClassification
-                    # optimize objective function
-                    session.run(objective_function, feed_dict={input: batch.X, y_true: batch.one_hotted_labels})# 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
-                    # get loss value and train accuracy
-                    loss_val, train_acc = session.run([loss, accuracy], feed_dict={input: batch.X, y_true: batch.one_hotted_labels})
+            for batch in epoch.batch_iterator():
+                batch: BatchIteratorClassification
+                # optimize objective function
+                self.session.run(objective_function, feed_dict={input: batch.X, y_true: batch.one_hotted_labels})# 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
+                # get loss value and train accuracy
+                loss_val, train_acc = self.session.run([loss, accuracy], feed_dict={input: batch.X, y_true: batch.one_hotted_labels})
 
-                    score, true, m = session.run([self.score, y_true, matches],
-                                                      feed_dict={input: batch.X, y_true: batch.one_hotted_labels})
-                    #print(score, true, m)
-                    logging.info('batch: {0}/{1}, loss: {2:.2f}, train accuracy: {3:.2f}'.format(batch.iteration_now, batch.iteration, loss_val, train_acc))
+                score, true, m = self.session.run([self.score, y_true, matches],
+                                                  feed_dict={input: batch.X, y_true: batch.one_hotted_labels})
+                #print(score, true, m)
+                logging.info('batch: {0}/{1}, loss: {2:.2f}, train accuracy: {3:.2f}'.format(batch.iteration_now, batch.iteration, loss_val, train_acc))
 
 
-                loss_val, test_acc = session.run([loss, accuracy], feed_dict={input: epoch.test_X, y_true: epoch.test_one_hotted_labels})
-                #test_acc = acc.eval(feed_dict={input: dataset.test_X, y_true: dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
-                logging.info('\nepoch: {0}/{1}, loss: {2:2f}, test accuracy: {3:.2f}\n'.format(epoch.epoch_now, epoch.epoch, loss_val, test_acc))
+            loss_val, test_acc = self.session.run([loss, accuracy], feed_dict={input: epoch.test_X, y_true: epoch.test_one_hotted_labels})
+            #test_acc = acc.eval(feed_dict={input: dataset.test_X, y_true: dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
+            logging.info('\nepoch: {0}/{1}, loss: {2:2f}, test accuracy: {3:.2f}\n'.format(epoch.epoch_now, epoch.epoch, loss_val, test_acc))
 
-                if savedir is not None and os.path.isdir(savedir):
-                    tf.compat.v1.train.Saver().save(session, './weights/epoch{0}_loss{1}_acc{2}'.format(epoch.epoch_now, loss_val, test_acc))
+            if savedir is not None and os.path.isdir(savedir):
+                tf.compat.v1.train.Saver().save(self.session, './weights/epoch{0}_loss{1}_acc{2}'.format(epoch.epoch_now, loss_val, test_acc))
+
+    def __del__(self):
+        self.session = None
+
+    def load(self, path):
+        self.session = tf.compat.v1.Session()
+
+        tf.compat.v1.train.Saver().restore(self.session, path)
+
+
+    def predict(self, X):
+        if self.session is None:
+            raise UnTrainedError('This model has not trained yet')
+
+        input = self.input_layer
+        ret = tf.argmax(self.score, 1)
+        return self.session.run([ret], feed_dict={input: X})
