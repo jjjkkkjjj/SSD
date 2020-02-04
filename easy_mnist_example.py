@@ -25,10 +25,11 @@ if __name__== '__main__':
     train_images, train_labels, test_images, test_labels = data()
 
     loss = LossFunctionParams(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.none)
-    iteration = IterationParams(epoch=5, batch_size=1000)
+    iteration = IterationParams(epoch=5, batch_size=256)
     opt = OptimizationParams(learning_rate=10e-3, momentum=0.9)
     train_params = TrainingParams(loss, iteration, opt)
 
     dataset = DatasetClassification(10, train_images, train_labels, test_images, test_labels)
 
     model.train(dataset, train_params)
+    # epoch: 5/5, loss: 1.513185, test accuracy: 0.95

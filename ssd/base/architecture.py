@@ -47,12 +47,12 @@ bias    :int
 strides :array-like
 """
 class Convolution(Layer):
-    def __init__(self, name, kernel, kernelnums, strides, padding='SAME'):
+    def __init__(self, name, kernel, kernelnums, strides, padding='VALID'):
         super().__init__(name, layertype=Layer.LayerType.convolution)
         self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), self, '__init__')
         self.kernelnums = check_type(kernelnums, 'kernelnums', int, self, '__init__')
         self.strides = check_type(strides, 'strides', (list, np.ndarray), self, '__init__')
-        self.padding = check_name(padding, 'padding', ['SAME'], self, '__init__')
+        self.padding = check_name(padding, 'padding', ['SAME', 'VALID'], self, '__init__')
 
     @property
     def kernel_width(self):
@@ -97,7 +97,7 @@ class FullyConnection(Layer):
     def __init__(self, name, outputnums, activationfunc='relu'):
         super().__init__(name, layertype=Layer.LayerType.fullyconnection)
         self.outputnums = check_type(outputnums, 'outputnums', int, self, '__init__')
-        self.activationfunc = check_name(activationfunc, 'activationfunc', ['relu'], self, '__init__')
+        self.activationfunc = check_name_including_none(activationfunc, 'activationfunc', ['relu', 'softmax'], self, default=None, funcnames='__init__')
 
 class DropOut(Layer):
     def __init__(self, name, rate):

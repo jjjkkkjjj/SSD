@@ -86,6 +86,8 @@ def fully_connection(input, fullyconnection):
             return output, weights, bias
         elif fullyconnection.activationfunc == 'relu':
             return tf.nn.relu(output), weights, bias
+        elif fullyconnection.activationfunc == 'softmax':
+            return tf.nn.softmax(output), weights, bias
         else:
             # raise!
             return
