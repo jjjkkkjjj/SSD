@@ -3,6 +3,7 @@ from ..utils.error.argchecker import check_type
 from ..params.training import IterationParams
 
 import numpy as np
+from enum import Enum
 
 class DataSet(Object):
     def __init__(self, train_X, train_labels, test_X, test_labels):
@@ -12,6 +13,8 @@ class DataSet(Object):
 
         self.test_X = np.array(check_type(test_X, 'test_X', (list, np.ndarray), self, funcnames='__init__'))
         self.test_labels = np.array(check_type(test_labels, 'test_labels', (list, np.ndarray), self, funcnames='__init__'))
+
+        #self.type =
 
     @property
     def count_train(self):

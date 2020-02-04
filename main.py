@@ -8,8 +8,8 @@ if __name__ == '__main__':
     train_img, train_labels, test_img, test_labels = data()
 
     # training
-    loss = LossFunctionParams(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.l2, decay=5 * 10e-4)
-    iteration = IterationParams(epoch=5, batch_size=256)
+    loss = LossFunctionParams(func=LossFuncType.square_error, reg_type=LossRegularizationType.none, decay=5 * 10e-4)
+    iteration = IterationParams(epoch=5, batch_size=1000)
     opt = OptimizationParams(learning_rate=10e-3, momentum=0.9)
     train_params = TrainingParams(loss, iteration, opt)
 

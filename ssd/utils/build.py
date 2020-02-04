@@ -21,7 +21,6 @@ def convolution(input, convolution):
     #check_type(convolution, 'convolution', Convolution, Model, funcnames='convolution')
     assert isinstance(convolution, Convolution), 'got {0}'.format(_get_typename(convolution))
     input_channels = int(input.get_shape()[-1])
-    print(input_channels)
     with tf.compat.v1.variable_scope(convolution.name):
         # get variable name's value in scope, if which doesn't exist create it
         weights = tf.compat.v1.get_variable('Weights',
