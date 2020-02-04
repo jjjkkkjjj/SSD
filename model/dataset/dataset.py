@@ -1,6 +1,6 @@
 from ..core.object import Object
 from ..common.utils.argchecker import check_type
-from ..train.params import IterationParams
+from ..train.params import OptimizationParams
 
 import numpy as np
 
@@ -24,13 +24,12 @@ class DataSet(Object):
         return len(self.test_labels)
 
     # iterator
-    def epoch_iterator(self, iter_params, random_by_epoch=True):
+    def epoch_iterator(self, opt_params):
         from .iterator import EpochIterator
 
-        _ = check_type(iter_params, 'iter_params', IterationParams, self, 'train')
-        _ = check_type(random_by_epoch, 'random_by_epoch', bool, self, 'train')
+        _ = check_type(opt_params, 'iter_params', OptimizationParams, self, 'train')
 
-        return EpochIterator(iter_params, self, random_by_epoch)
+        return EpochIterator(opt_params, self)
 
 class DatasetEncoder(DataSet):
     def __init__(self, shape, *args, **kwargs):
@@ -38,11 +37,11 @@ class DatasetEncoder(DataSet):
         self.shape = check_type(shape, 'shape', (list, np.ndarray, tuple), self, funcnames='__init__')
 
 
-    def epoch_iterator(self, iter_params, random_by_epoch=True):
+    def epoch_iterator(self, opt_params):
         from .iterator import EpochIteratorEncoder
-        _ = super().epoch_iterator(iter_params, random_by_epoch)
+        _ = super().epoch_iterator(opt_params)
 
-        return EpochIteratorEncoder(iter_params, self, random_by_epoch)
+        return EpochIteratorEncoder(opt_params, self)
 
 class DatasetClassification(DataSet):
     def __init__(self, class_num, *args, **kwargs):
@@ -64,8 +63,8 @@ class DatasetClassification(DataSet):
         return ret
 
     # iterator
-    def epoch_iterator(self, iter_params, random_by_epoch=True):
+    def epoch_iterator(self, opt_params):
         from .iterator import EpochIteratorClassification
-        _ = super().epoch_iterator(iter_params, random_by_epoch)
+        _ = super().epoch_iterator(opt_params)
 
-        return EpochIteratorClassification(iter_params, self, random_by_epoch)
+        return EpochIteratorClassification(opt_params, self)

@@ -21,7 +21,6 @@ class OptimezerMixin:
         # get params for training
         self.params = check_type(params, 'params', TrainingParams, self, funcnames='train')
 
-        iter_params = self.params.iter_params
         loss_params = self.params.lossfunc_params
         opt_params = self.params.opt_params
 
@@ -41,7 +40,7 @@ class OptimezerMixin:
         # set objective function
         loss = get_loss_function(y_true, self.score, loss_params, self)
         loss = get_loss_added_regularization(self.weights, loss, loss_params, self)
-        optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate=opt_params.learning_rate)
+        optimizer = opt_params.optimizer
         objective_function = optimizer.minimize(loss)
 
         # set accuracy
@@ -59,7 +58,7 @@ class OptimezerMixin:
 
             session.run(init)
 
-            for epoch in dataset.epoch_iterator(iter_params, random_by_epoch=False):
+            for epoch in dataset.epoch_iterator(opt_params):
                 epoch: EpochIteratorClassification
                 logging.info('\nEpoch: {0}\n'.format(epoch.epoch_now))
 

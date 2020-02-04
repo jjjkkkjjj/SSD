@@ -4,6 +4,7 @@ from dataset.mnist import data
 from model.dataset.dataset import DatasetClassification
 from model.train.params import *
 
+from tensorflow.compat.v1.train import *
 """
 see https://www.tensorflow.org/tutorials/images/cnn?hl=ja
 """
@@ -36,9 +37,8 @@ if __name__== '__main__':
     train_images, train_labels, test_images, test_labels = data()
 
     loss = LossFunctionParams(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.none)
-    iteration = IterationParams(epoch=5, batch_size=1000)
-    opt = OptimizationParams(learning_rate=10e-3, momentum=0.9)
-    train_params = TrainingParams(loss, iteration, opt)
+    opt = OptimizationParams(optimizer=AdamOptimizer(10e-3), epoch=5, batch_size=1000)
+    train_params = TrainingParams(loss, opt)
 
     dataset = DatasetClassification(10, train_images, train_labels, test_images, test_labels)
 

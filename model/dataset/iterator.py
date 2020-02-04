@@ -1,4 +1,4 @@
-from model.train.params import IterationParams
+from model.train.params import OptimizationParams
 from model.dataset.dataset import DataSet, DatasetClassification, DatasetEncoder
 
 import numpy as np
@@ -9,19 +9,18 @@ Property naming rule: hoge or hoge_now
     hoge_now: current count of hoge
 """
 class EpochIterator:
-    _iter_params: IterationParams
+    _opt_params: OptimizationParams
     _dataset: DataSet
     random_by_epoch: bool
 
-    def __init__(self, iter_params, dataset, random_by_epoch):
+    def __init__(self, opt_params, dataset):
         # check is already finished in _dataset method
         #self.iter_params = check_type(iter_params, 'iter_params', IterationParams, Iterator, '__init__')
         #self.dataset = check_type(dataset, 'dataset', DataSet, Iterator, '__init__')
         #self.random_by_epoch = check_type(random_by_epoch, 'random_by_epoch', bool, Iterator, '__init__')
 
-        self._iter_params = iter_params
+        self._opt_params = opt_params
         self._dataset = dataset
-        self.random_by_epoch = random_by_epoch
 
         # iteration parameter
         self._iter_num = 0
@@ -50,8 +49,12 @@ class EpochIterator:
 
     # for parameter
     @property
+    def random_by_epoch(self):
+        return self._opt_params.random_by_epoch
+
+    @property
     def epoch(self):
-        return self._iter_params.epoch
+        return self._opt_params.epoch
 
     @property
     def epoch_now(self):
@@ -72,7 +75,7 @@ class EpochIterator:
             raise StopIteration
 
     def batch_iterator(self):
-        return BatchIterator(self, self._iter_params)
+        return BatchIterator(self, self._opt_params)
 """
 epoch
 
@@ -88,7 +91,7 @@ class EpochIteratorEncoder(EpochIterator):
         return self
 
     def batch_iterator(self):
-        return BatchIteratorEncoder(self, self._iter_params)
+        return BatchIteratorEncoder(self, self._opt_params)
 
 class EpochIteratorClassification(EpochIterator):
     _dataset: DatasetClassification
@@ -106,7 +109,7 @@ class EpochIteratorClassification(EpochIterator):
 
 
     def batch_iterator(self):
-        return BatchIteratorClassification(self, self._iter_params)
+        return BatchIteratorClassification(self, self._opt_params)
 
     def __iter__(self):
         return self
@@ -121,12 +124,12 @@ batch
 """
 class BatchIterator:
     _epoch_iterator: EpochIterator
-    _iter_params: IterationParams
+    _opt_params: OptimizationParams
     batch_indices: np.ndarray
 
-    def __init__(self, epoch_iterator, iter_params):
+    def __init__(self, epoch_iterator, opt_params):
         self._epoch_iterator = epoch_iterator
-        self._iter_params = iter_params
+        self._opt_params = opt_params
 
         # p = numpy.random.permutation(len(a))
         # a[p], b[p]
@@ -149,11 +152,11 @@ class BatchIterator:
         return self._epoch_iterator.count_train
     @property
     def batch_size(self):
-        return self._iter_params.batch_size
+        return self._opt_params.batch_size
 
     @property
     def epoch(self):
-        return self._iter_params.epoch
+        return self._opt_params.epoch
     @property
     def epoch_now(self):
         return self._epoch_iterator.epoch_now
