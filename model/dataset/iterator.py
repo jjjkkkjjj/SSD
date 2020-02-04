@@ -1,6 +1,5 @@
-from ..params.training import IterationParams
-from .dataset import DataSet, DatasetClassification, DatasetEncoder
-from ..utils.error.argchecker import check_type
+from model.train.params import IterationParams
+from model.dataset.dataset import DataSet, DatasetClassification, DatasetEncoder
 
 import numpy as np
 

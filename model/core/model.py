@@ -1,8 +1,7 @@
 from .architecture import *
 from .opt import OptimezerMixin
-from ..utils import build
+from . import build
 
-import tensorflow as tf
 import logging
 
 """

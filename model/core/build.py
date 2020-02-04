@@ -1,11 +1,10 @@
-from ..base.architecture import *
-from ..utils.error.argchecker import check_type
-from ..utils.argutils import _get_typename
+from .architecture import *
+from ..common.utils.typename import _get_typename
 
 import tensorflow as tf
 
 def input(input):
-    #from ..base.model import Model
+    #from ..core.model import Model
 
     #check_type(input, 'input', Input, Model, funcnames='input')
     assert isinstance(input, Input), 'got {0}'.format(_get_typename(input))
@@ -16,7 +15,7 @@ def input(input):
 
 
 def convolution(input, convolution):
-    #from ..base.model import Model
+    #from ..core.model import Model
 
     #check_type(convolution, 'convolution', Convolution, Model, funcnames='convolution')
     assert isinstance(convolution, Convolution), 'got {0}'.format(_get_typename(convolution))
@@ -39,7 +38,7 @@ def convolution(input, convolution):
 
 
 def maxPooling(input, maxpooling):
-    #from ..base.model import Model
+    #from ..core.model import Model
 
     #check_type(maxpooling, 'maxpooling', MaxPooling, Model, funcnames='maxpooling')
     assert isinstance(maxpooling, MaxPooling), 'got {0}'.format(_get_typename(maxpooling))
@@ -52,7 +51,7 @@ def maxPooling(input, maxpooling):
 # def batch_normalization(self):
 
 def flatten(input, flatten):
-    #from ..base.model import Model
+    #from ..core.model import Model
 
     #check_type(flatten, 'flatten', Flatten, Model, funcnames='flatten')
     assert isinstance(flatten, Flatten), 'got {0}'.format(_get_typename(flatten))
@@ -62,7 +61,7 @@ def flatten(input, flatten):
 
 
 def fully_connection(input, fullyconnection):
-    #from ..base.model import Model
+    #from ..core.model import Model
 
     #check_type(fullyconnection, 'fullyconnection', FullyConnection, Model, funcnames='fullyconnection')
     assert isinstance(fullyconnection, FullyConnection), 'got {0}'.format(_get_typename(fullyconnection))
@@ -94,7 +93,7 @@ def fully_connection(input, fullyconnection):
 
 
 def dropout(input, dropout):
-    #from ..base.model import Model
+    #from ..core.model import Model
 
     #check_type(dropout, 'dropout', DropOut, Model, funcnames='dropout')
     assert isinstance(dropout, DropOut), 'got {0}'.format(_get_typename(dropout))

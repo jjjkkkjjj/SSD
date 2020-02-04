@@ -1,4 +1,4 @@
-from ...utils.argutils import _get_typename_from_class, _get_typename
+from ..utils.typename import _get_typename_from_class, _get_typename
 
 # return instances' names for error message
 def _emsg_type_check(arg, argname, classes, ins, funcnames):

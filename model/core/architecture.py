@@ -1,4 +1,4 @@
-from ..utils.error.argchecker import *
+from ..common.utils.argchecker import *
 from .object import Object
 
 from enum import Enum

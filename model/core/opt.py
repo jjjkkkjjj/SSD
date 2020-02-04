@@ -1,9 +1,8 @@
-from ..data.dataset import DataSet
-from ..params.loss_function import get_loss_function
-from ..params.regularization import get_loss_added_regularization
-from ..params.training import TrainingParams
-from ..data.iterator import *
-from ..utils.error.argchecker import *
+from ..train.loss_function import get_loss_function
+from ..train.regularization import get_loss_added_regularization
+from ..train.params import TrainingParams
+from ..dataset.iterator import *
+from ..common.utils.argchecker import *
 
 import tensorflow as tf
 import logging

@@ -1,6 +1,6 @@
-from ..utils.error.argchecker import *
-from ..utils.error.warnmsg import _wmsg_enum
-from ..params.training import LossFunctionParams, LossFuncType, LossRegularizationType
+from ..common.utils.argchecker import *
+from ..common.error.warnmsg import _wmsg_enum
+from .params import LossFunctionParams, LossFuncType
 
 import tensorflow as tf
 import logging

@@ -1,5 +1,5 @@
-from ..base.object import Object
-from ..utils.error.argchecker import *
+from ..core.object import Object
+from ..common.utils.argchecker import *
 
 from enum import Enum
 

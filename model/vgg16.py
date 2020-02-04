@@ -1,5 +1,5 @@
-from .base.model import Model
-from .base.architecture import *
+from .core.model import Model
+from .core.architecture import *
 
 
 class VGG16(Model):

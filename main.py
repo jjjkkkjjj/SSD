@@ -1,7 +1,7 @@
-from ssd.vgg16 import VGG16
+from model.vgg16 import VGG16
 from dataset.mnist import data
-from ssd.params.training import *
-from ssd.data.dataset import DatasetClassification
+from model.train.params import *
+from model.dataset.dataset import DatasetClassification
 
 if __name__ == '__main__':
     vgg = VGG16(10, verbose=True)

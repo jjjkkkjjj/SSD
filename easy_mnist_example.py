@@ -1,8 +1,8 @@
-from ssd.base.model import Model
-from ssd.base.architecture import *
+from model.core.model import Model
+from model.core.architecture import *
 from dataset.mnist import data
-from ssd.data.dataset import DatasetClassification
-from ssd.params.training import *
+from model.dataset.dataset import DatasetClassification
+from model.train.params import *
 
 class MNIST(Model):
     _hidden_models = [

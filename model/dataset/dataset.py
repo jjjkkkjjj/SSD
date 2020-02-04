@@ -1,9 +1,9 @@
-from ..base.object import Object
-from ..utils.error.argchecker import check_type
-from ..params.training import IterationParams
+from ..core.object import Object
+from ..common.utils.argchecker import check_type
+from ..train.params import IterationParams
 
 import numpy as np
-from enum import Enum
+
 
 class DataSet(Object):
     def __init__(self, train_X, train_labels, test_X, test_labels):
