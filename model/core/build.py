@@ -36,6 +36,26 @@ def convolution(input, convolution):
         output = tf.nn.bias_add(wx, bias)
         return tf.nn.relu(output), weights, bias
 
+def atrous_convolution(input, atrous_conv):
+    assert isinstance(atrous_conv, AtrousConvolution), 'got {0}'.format(_get_typename(atrous_conv))
+    input_channels = int(input.get_shape()[-1])
+    with tf.compat.v1.variable_scope(atrous_conv.name):
+        # get variable name's value in scope, if which doesn't exist create it
+        weights = tf.compat.v1.get_variable('Weights',
+                                            shape=[atrous_conv.kernel_height, atrous_conv.kernel_width, input_channels,
+                                                   atrous_conv.kernelnums],
+                                            initializer=tf.random_normal_initializer(mean=0.0, stddev=0.01))
+        bias = tf.compat.v1.get_variable('Bias', shape=[atrous_conv.kernelnums],
+                                         initializer=tf.constant_initializer(0.0))
+
+        # atrous convolutioln
+        wx = tf.nn.atrous_conv2d(input, weights, rate=atrous_conv.dilation_rate, padding=atrous_conv.padding)
+
+        # w*x + b
+        output = tf.nn.bias_add(wx, bias)
+        return tf.nn.relu(output), weights, bias
+
+
 
 def maxPooling(input, maxpooling):
     #from ..core.model import Model

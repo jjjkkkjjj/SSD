@@ -1,11 +1,12 @@
-from model.vgg16 import VGG16
+from model.ssd300 import SSD300
 from dataset.mnist import data
 from model.train.params import *
 from model.dataset.dataset import DatasetClassification
 from model.train.optimizer import *
 
 if __name__ == '__main__':
-    vgg = VGG16(10, verbose=True).build()
+    ssd = SSD300(outputnum=10, verbose=True).build()
+    """
     train_img, train_labels, test_img, test_labels = data()
 
     # training
@@ -15,3 +16,4 @@ if __name__ == '__main__':
 
     dataset = DatasetClassification(10, train_img, train_labels, test_img, test_labels)
     vgg.train(dataset, params=train_params)
+    """

@@ -21,11 +21,12 @@ class Layer(Object):
         flatten = 3
         fullyconnection = 4
         dropout = 5
+        atrous_convolution = 6
 
 class Input(Layer):
     def __init__(self, name, rect, channel):
         super().__init__(name, layertype=Layer.LayerType.input)
-        self.rect = check_type(rect, 'rect', (list, np.ndarray), self, '__init__')
+        self.rect = check_type(rect, 'rect', (list, tuple, np.ndarray), self, '__init__')
         self.channel = check_type(channel, 'channel', int, self, '__init__')
 
     @property
@@ -50,9 +51,9 @@ strides :array-like
 class Convolution(Layer):
     def __init__(self, name, kernel, kernelnums, strides, padding='VALID'):
         super().__init__(name, layertype=Layer.LayerType.convolution)
-        self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), self, '__init__')
+        self.kernel = check_type(kernel, 'kernel', (list, tuple, np.ndarray), self, '__init__')
         self.kernelnums = check_type(kernelnums, 'kernelnums', int, self, '__init__')
-        self.strides = check_type(strides, 'strides', (list, np.ndarray), self, '__init__')
+        self.strides = check_type(strides, 'strides', (list, tuple, np.ndarray), self, '__init__')
         self.padding = check_name(padding, 'padding', ['SAME', 'VALID'], self, '__init__')
 
     @property
@@ -67,14 +68,21 @@ class Convolution(Layer):
     @property
     def stride_height(self):
         return self.strides[0]
+
+class AtrousConvolution(Convolution):
+    def __init__(self, name, dilation_rate, kernel, kernelnums, strides, padding='VALID'):
+        super().__init__(name, kernel, kernelnums, strides, padding)
+        self.type = Layer.LayerType.atrous_convolution
+        self.dilation_rate = dilation_rate
+
 """
 below class must be duplicated
 """
 class MaxPooling(Layer):
     def __init__(self, name, kernel, strides, padding='VALID'):
         super().__init__(name, layertype=Layer.LayerType.maxpooling)
-        self.kernel = check_type(kernel, 'kernel', (list, np.ndarray), self, '__init__')
-        self.strides = check_type(strides, 'strides', (list, np.ndarray), self, '__init__')
+        self.kernel = check_type(kernel, 'kernel', (list, tuple, np.ndarray), self, '__init__')
+        self.strides = check_type(strides, 'strides', (list, tuple, np.ndarray), self, '__init__')
         self.padding = check_name(padding, 'padding', ['VALID', 'SAME'], self, '__init__')
 
     @property
