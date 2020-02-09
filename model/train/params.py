@@ -6,8 +6,8 @@ from tensorflow.compat.v1.train import Optimizer
 
 class LossFuncType(Enum):
     square_error = 0
-    multinominal_logistic_regression = 1
-
+    softmax_cross_entropy = 1
+    smoothL1 = 2
 
 class LossRegularizationType(Enum):
     none = 0

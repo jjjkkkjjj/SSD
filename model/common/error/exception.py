@@ -12,3 +12,6 @@ class ArgumentEnumError(Exception):
 
 class UnTrainedError(Exception):
     pass
+
+class UnBuiltError(Exception):
+    pass

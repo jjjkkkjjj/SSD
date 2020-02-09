@@ -3,6 +3,8 @@ from ..train.loss_function import get_loss_function
 from ..train.regularization import get_loss_added_regularization
 from ..train.params import TrainingParams
 from ..dataset.dataset import *
+from ..dataset.epoch import *
+from ..dataset.batch import *
 from ..common.utils.argchecker import *
 
 import tensorflow as tf
@@ -26,7 +28,7 @@ class ClassifierMixin(BaseOptMixin):
         # define variable without value in train
         input = self.input_layer
         # must be variablized
-        y_true = tf.compat.v1.placeholder(tf.float32, shape=[None, dataset.class_num])
+        gt_labels = tf.compat.v1.placeholder(tf.float32, shape=[None, dataset.class_num])
 
 
         """
@@ -37,13 +39,13 @@ class ClassifierMixin(BaseOptMixin):
         """
 
         # set objective function
-        loss = get_loss_function(y_true, self.score, loss_params, self)
+        loss = get_loss_function(gt_labels, self.score, loss_params, self)
         loss = get_loss_added_regularization(self.weights, loss, loss_params, self)
         optimizer = opt_params.optimizer
         objective_function = optimizer.minimize(loss)
 
         # set accuracy
-        matches = tf.equal(tf.argmax(self.score, 1), tf.argmax(y_true, 1))
+        matches = tf.equal(tf.argmax(self.score, 1), tf.argmax(gt_labels, 1))
         accuracy = tf.reduce_mean(tf.cast(matches, tf.float32))
 
         init = tf.compat.v1.global_variables_initializer()
@@ -64,18 +66,18 @@ class ClassifierMixin(BaseOptMixin):
             for batch in epoch.batch_iterator():
                 batch: BatchIteratorClassification
                 # optimize objective function
-                self.session.run(objective_function, feed_dict={input: batch.X, y_true: batch.one_hotted_labels})# 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
+                self.session.run(objective_function, feed_dict={input: batch.X, gt_labels: batch.one_hotted_labels})# 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
                 # get loss value and train accuracy
-                loss_val, train_acc = self.session.run([loss, accuracy], feed_dict={input: batch.X, y_true: batch.one_hotted_labels})
+                loss_val, train_acc = self.session.run([loss, accuracy], feed_dict={input: batch.X, gt_labels: batch.one_hotted_labels})
 
-                score, true, m = self.session.run([self.score, y_true, matches],
-                                                  feed_dict={input: batch.X, y_true: batch.one_hotted_labels})
+                score, true, m = self.session.run([self.score, gt_labels, matches],
+                                                  feed_dict={input: batch.X, gt_labels: batch.one_hotted_labels})
                 #print(score, true, m)
                 logging.info('batch: {0}/{1}, loss: {2:.2f}, train accuracy: {3:.2f}'.format(batch.iteration_now, batch.iteration, loss_val, train_acc))
 
 
-            loss_val, test_acc = self.session.run([loss, accuracy], feed_dict={input: epoch.test_X, y_true: epoch.test_one_hotted_labels})
-            #test_acc = acc.eval(feed_dict={input: dataset.test_X, y_true: dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
+            loss_val, test_acc = self.session.run([loss, accuracy], feed_dict={input: epoch.test_X, gt_labels: epoch.test_one_hotted_labels})
+            #test_acc = acc.eval(feed_dict={input: dataset.test_X, gt_labels: dataset.test_one_hotted_labels}) # 'keep_prob': 1.0 see https://github.com/Natsu6767/VGG16-Tensorflow/blob/master/vgg16.py
             logging.info('\nepoch: {0}/{1}, loss: {2:2f}, test accuracy: {3:.2f}\n'.format(epoch.epoch_now, epoch.epoch, loss_val, test_acc))
 
             if savedir is not None and os.path.isdir(savedir):
@@ -93,4 +95,7 @@ class ClassifierMixin(BaseOptMixin):
         return self.session.run([ret], feed_dict={input: X})
 
 class ObjectDetectionMixin(BaseOptMixin):
-    pass
+    def train(self, dataset, params, savedir=None):
+        dataset = check_type(dataset, 'dataset', DatasetObjectDetection, self, funcnames='train')
+
+        dataset: DatasetObjectDetection

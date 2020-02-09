@@ -24,7 +24,7 @@ def train():
 
     train_images, train_labels, test_images, test_labels = data()
 
-    loss = LossFunctionParams(func=LossFuncType.multinominal_logistic_regression, reg_type=LossRegularizationType.none)
+    loss = LossFunctionParams(func=LossFuncType.softmax_cross_entropy, reg_type=LossRegularizationType.none)
     opt = OptimizationParams(optimizer=Adam(learning_rate=1e-3), epoch=5, batch_size=256)
     train_params = TrainingParams(loss, opt)
 

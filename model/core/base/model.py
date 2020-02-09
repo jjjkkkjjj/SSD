@@ -127,7 +127,14 @@ class BaseModel(BaseLayerModel):
         return self
 
     @property
+    def isBuilt(self):
+        return len(self.layers) > 0
+
+    @property
     def score(self):
+        if not self.isBuilt:
+            message = 'score function must be called after calling build function'
+            raise UnBuiltError(message)
         return self.layers[-1]
 
     """
@@ -167,7 +174,10 @@ class BaseModel(BaseLayerModel):
             raise SyntaxError('This was bug...')
 
     def set_layer_attribute(self, layer, layer_model):
-        if hasattr(self, layer_model.name):
+        self.set_layer_attribute_name(layer, layer_model.name)
+
+    def set_layer_attribute_name(self, layer, name):
+        if hasattr(self, name):
             message = 'layer\'s name \'{0}\' is invalid because this name will be used for layer value'.format(layer_model.name)
             raise ArgumentNameError(message)
-        setattr(self, layer_model.name, layer)
+        setattr(self, name, layer)
