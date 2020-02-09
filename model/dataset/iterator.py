@@ -1,5 +1,5 @@
 from model.train.params import OptimizationParams
-from model.dataset.dataset import DataSet, DatasetClassification, DatasetEncoder
+from model.dataset.dataset import DataSet, DatasetClassification, DatasetEncoder, DatasetObjectRecognition
 
 import numpy as np
 

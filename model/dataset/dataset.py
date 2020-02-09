@@ -68,3 +68,6 @@ class DatasetClassification(DataSet):
         _ = super().epoch_iterator(opt_params)
 
         return EpochIteratorClassification(opt_params, self)
+
+class DatasetObjectRecognition(DataSet):
+    pass

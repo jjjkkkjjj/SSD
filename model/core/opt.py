@@ -8,14 +8,14 @@ import tensorflow as tf
 import logging
 import os
 
-class OptimezerMixin:
+class ClassifierMixin:
     input_layer: tf.compat.v1.placeholder
     score: tf.Tensor
     weights: list
     params: TrainingParams
 
     def train(self, dataset, params, savedir=None):
-        dataset = check_type(dataset, 'dataset', DataSet, self, funcnames='train')
+        dataset = check_type(dataset, 'dataset', DatasetClassification, self, funcnames='train')
 
         # type must be checked
         dataset: DatasetClassification

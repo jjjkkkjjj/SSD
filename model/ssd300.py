@@ -1,6 +1,7 @@
 from .core.model import Model
 from .vgg16 import VGG16
 from .core.architecture import *
+from .dataset.iterator import *
 
 class SSD300(Model):
     #https://github.com/rykov8/ssd_keras/blob/master/ssd.py
@@ -63,3 +64,8 @@ class SSD300(Model):
         logging.debug("\nBuilding model was succeeded.\n")
 
         return self
+    
+    def train(self, dataset, params, savedir=None):
+        dataset = check_type(dataset, 'dataset', DatasetObjectRecognition, self, funcnames='train')
+        
+        dataset: DatasetObjectRecognition

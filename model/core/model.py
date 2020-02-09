@@ -1,5 +1,5 @@
 from .architecture import *
-from .opt import OptimezerMixin
+from .opt import ClassifierMixin
 from . import build
 
 import logging
@@ -13,7 +13,7 @@ params:
     biases      : list of tf.Variable is bias
 """
 
-class Model(Architecture, OptimezerMixin):
+class Model(Architecture, ClassifierMixin):
 
     def __init__(self, models, verbose=True):
         super().__init__(models)
