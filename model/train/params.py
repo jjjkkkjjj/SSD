@@ -1,4 +1,4 @@
-from ..core.object import Object
+from model.core.base.object import Object
 from ..common.utils.argchecker import *
 
 from enum import Enum

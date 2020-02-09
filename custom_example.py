@@ -1,5 +1,6 @@
-from model.core.model import Model
-from model.core.architecture import *
+from model.core.model import ModelClassifier
+from model.core.opt import ClassifierMixin
+from model.core.layer_models import *
 from dataset.mnist import data
 from model.dataset.dataset import DatasetClassification
 from model.train.params import *
@@ -10,7 +11,7 @@ see https://www.tensorflow.org/tutorials/images/cnn?hl=ja
 """
 
 
-class MNIST(Model):
+class MNIST(ModelClassifier, ClassifierMixin):
 
     def __init__(self, *args, **kwargs):
         models = [
@@ -33,7 +34,7 @@ class MNIST(Model):
 
 
 if __name__== '__main__':
-    model = MNIST().build()
+    model = MNIST(verbose=True).build()
 
     train_images, train_labels, test_images, test_labels = data()
 

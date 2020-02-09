@@ -1,10 +1,8 @@
 from ..common.utils.argchecker import *
-from ..common.utils.typename import _get_typename
-from .object import Object
+from .base.object import Object
 
 from enum import Enum
 import numpy as np
-import logging
 #import warnings
 #warnings.filterwarnings('ignore',category=FutureWarning)
 
@@ -112,52 +110,3 @@ class DropOut(Layer):
     def __init__(self, name, rate):
         super().__init__(name, layertype=Layer.LayerType.dropout)
         self.rate = float(check_type(rate, 'rate', (float, int), self, '__init__'))
-"""
-Attributes
-params: array-like of Layer
-"""
-class Architecture(Object):
-    def __init__(self, models):
-        _ = check_type(models, 'models', list, self, '__init__')
-        if len(models) > 0:
-            try:
-                _ = check_type(models[0], 'models[0]', Input, self, '__init__')
-            except ArgumentTypeError:
-                message = 'models\' first element must be Input, but got {0}'.format(_get_typename(models[0]))
-                raise ArgumentTypeError(message)
-        self._models = models
-
-    @property
-    def all_models(self):
-        return self._models
-
-    @property
-    def input_model(self):
-        if len(self._models) == 0:
-            return None
-        else:
-            return self._models[0]
-    @property
-    def output_model(self):
-        if len(self._models) == 0:
-            return None
-        else:
-            return self._models[-1]
-
-    @property
-    def hidden_models(self):
-        if len(self._models) < 3:
-            return None
-        else:
-            return self._models[1:-1]
-
-    """
-    :return
-        tuple  : output shape
-    """
-    @property
-    def output_shape(self):
-        if self.output_model.type == Layer.LayerType.fullyconnection:
-            return (self.output_model.outputnums)
-        else:
-            logging.warning('Cannot get output shape because implementation has not be defined')

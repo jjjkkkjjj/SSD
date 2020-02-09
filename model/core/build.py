@@ -1,4 +1,4 @@
-from .architecture import *
+from .layer_models import *
 from ..common.utils.typename import _get_typename
 
 import tensorflow as tf

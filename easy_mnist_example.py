@@ -1,11 +1,12 @@
-from model.core.model import Model
-from model.core.architecture import *
+from model.core.model import ModelClassifier
+from model.core.opt import ClassifierMixin
+from model.core.layer_models import *
 from dataset.mnist import data
 from model.dataset.dataset import DatasetClassification
 from model.train.params import *
 from model.train.optimizer import *
 
-class MNIST(Model):
+class MNIST(ModelClassifier, ClassifierMixin):
 
     def __init__(self, *args, **kwargs):
         models = [

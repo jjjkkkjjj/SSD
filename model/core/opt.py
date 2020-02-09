@@ -1,18 +1,16 @@
+from .base.opt import BaseOptMixin
 from ..train.loss_function import get_loss_function
 from ..train.regularization import get_loss_added_regularization
 from ..train.params import TrainingParams
-from ..dataset.iterator import *
+from ..dataset.dataset import *
 from ..common.utils.argchecker import *
 
 import tensorflow as tf
 import logging
 import os
 
-class ClassifierMixin:
-    input_layer: tf.compat.v1.placeholder
-    score: tf.Tensor
-    weights: list
-    params: TrainingParams
+class ClassifierMixin(BaseOptMixin):
+
 
     def train(self, dataset, params, savedir=None):
         dataset = check_type(dataset, 'dataset', DatasetClassification, self, funcnames='train')
@@ -83,13 +81,7 @@ class ClassifierMixin:
             if savedir is not None and os.path.isdir(savedir):
                 tf.compat.v1.train.Saver().save(self.session, './weights/epoch{0}_loss{1}_acc{2}'.format(epoch.epoch_now, loss_val, test_acc))
 
-    def __del__(self):
-        self.session = None
 
-    def load(self, path):
-        self.session = tf.compat.v1.Session()
-
-        tf.compat.v1.train.Saver().restore(self.session, path)
 
 
     def predict(self, X):
@@ -99,3 +91,6 @@ class ClassifierMixin:
         input = self.input_layer
         ret = tf.argmax(self.score, 1)
         return self.session.run([ret], feed_dict={input: X})
+
+class ObjectDetectionMixin(BaseOptMixin):
+    pass

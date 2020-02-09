@@ -1,49 +1,22 @@
-from ..core.object import Object
+__all__ = ['DatasetEncoder', 'DatasetClassification', 'DatasetObjectDetection']
+from .base.dataset import BaseDataSet
 from ..common.utils.argchecker import check_type
-from ..train.params import OptimizationParams
 
 import numpy as np
 
-
-class DataSet(Object):
-    def __init__(self, train_X, train_labels, test_X, test_labels):
-        self.train_X = np.array(check_type(train_X, 'train_X', (list, np.ndarray), self, funcnames='__init__'))
-        self.train_labels = np.array(check_type(train_labels, 'train_labels', (list, np.ndarray), self, funcnames='__init__'))
-        # error handling when X and labels size is not same
-
-        self.test_X = np.array(check_type(test_X, 'test_X', (list, np.ndarray), self, funcnames='__init__'))
-        self.test_labels = np.array(check_type(test_labels, 'test_labels', (list, np.ndarray), self, funcnames='__init__'))
-
-        #self.type =
-
-    @property
-    def count_train(self):
-        return len(self.train_labels)
-    @property
-    def count_test(self):
-        return len(self.test_labels)
-
-    # iterator
-    def epoch_iterator(self, opt_params):
-        from .iterator import EpochIterator
-
-        _ = check_type(opt_params, 'iter_params', OptimizationParams, self, 'train')
-
-        return EpochIterator(opt_params, self)
-
-class DatasetEncoder(DataSet):
+class DatasetEncoder(BaseDataSet):
     def __init__(self, shape, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.shape = check_type(shape, 'shape', (list, np.ndarray, tuple), self, funcnames='__init__')
 
 
     def epoch_iterator(self, opt_params):
-        from .iterator import EpochIteratorEncoder
+        from .epoch import EpochIteratorEncoder
         _ = super().epoch_iterator(opt_params)
 
         return EpochIteratorEncoder(opt_params, self)
 
-class DatasetClassification(DataSet):
+class DatasetClassification(BaseDataSet):
     def __init__(self, class_num, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.class_num = check_type(class_num, 'class_num', int, self, funcnames='__init__')
@@ -64,10 +37,10 @@ class DatasetClassification(DataSet):
 
     # iterator
     def epoch_iterator(self, opt_params):
-        from .iterator import EpochIteratorClassification
+        from .epoch import EpochIteratorClassification
         _ = super().epoch_iterator(opt_params)
 
         return EpochIteratorClassification(opt_params, self)
 
-class DatasetObjectRecognition(DataSet):
+class DatasetObjectDetection(BaseDataSet):
     pass

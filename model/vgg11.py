@@ -1,8 +1,9 @@
-from .core.model import Model
-from .core.architecture import *
+from .core.model import ModelClassifier
+from .core.opt import ClassifierMixin
+from .core.layer_models import *
 
 
-class VGG11(Model):
+class VGG11(ModelClassifier, ClassifierMixin):
     def __init__(self, outputnum, input_rect=(224, 224), input_channel=3, *args, **kwargs):
         models = [
             Input('input', rect=input_rect, channel=input_channel),

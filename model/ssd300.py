@@ -1,9 +1,12 @@
-from .core.model import Model
+from .core.model import ModelObjectDetection
+from .core.opt import ObjectDetectionMixin
 from .vgg16 import VGG16
-from .core.architecture import *
-from .dataset.iterator import *
+from .core.layer_models import *
+from .dataset.dataset import *
 
-class SSD300(Model):
+import logging
+
+class SSD300(ModelObjectDetection, ObjectDetectionMixin):
     #https://github.com/rykov8/ssd_keras/blob/master/ssd.py
     def __init__(self, outputnum, *args, **kwargs):
         #outputnum=10 is dummy
@@ -66,6 +69,6 @@ class SSD300(Model):
         return self
     
     def train(self, dataset, params, savedir=None):
-        dataset = check_type(dataset, 'dataset', DatasetObjectRecognition, self, funcnames='train')
+        dataset = check_type(dataset, 'dataset', DatasetObjectDetection, self, funcnames='train')
         
-        dataset: DatasetObjectRecognition
+        dataset: DatasetObjectDetection

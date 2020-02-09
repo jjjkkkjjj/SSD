@@ -76,7 +76,7 @@ raise:
     ArgumentTypeError   : if all layers' elements isn't inherited Layer, raise ArgumentTypeError
 """
 def check_layer_models(layer_models, ins):
-    from ...core.architecture import Layer
+    from ...core.layer_models import Layer
     check_type(layer_models, 'layers', (list, np.ndarray), ins)
     if not all(isinstance(layer_model, Layer) for layer_model in layer_models):
         message = _emsg_check_layers_all(ins)
