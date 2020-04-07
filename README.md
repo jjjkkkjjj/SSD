@@ -9,6 +9,6 @@ check "Collect run-time types information for code insight"
 - Anaconda
 
   ```bash
-   pip install tensorflow-gpu==1.14 numpy==1.16.4
+  conda install -c conda-forge tensorflow-gpu numpy opencv ffmpeg scipy 
   ```
 

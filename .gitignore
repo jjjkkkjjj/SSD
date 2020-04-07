@@ -6,7 +6,7 @@ logs/*
 weights/*
 !.gitkeep
 
-dataset/voc/*
+datasets/voc/*
 !.gitkeep
 
 # Created by https://www.gitignore.io/api/linux,macos,python,pycharm+all
